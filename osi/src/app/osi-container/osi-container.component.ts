@@ -6,8 +6,19 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./osi-container.component.css']
 })
 export class OsiContainerComponent implements OnInit {
+  public uploadMode: boolean;
 
-  constructor() { }
+  constructor() {
+    this.uploadMode = true;
+  }
+
+  setUploadMode() {
+    this.uploadMode = true;
+  }
+
+  setDownloadMode() {
+    this.uploadMode = false;
+  }
 
   ngOnInit() {
   }

@@ -10,3 +10,24 @@
 .in{
   display: block;
 }
+
+.active{
+  display: block;
+}
+
+.nav-tabs__tab{
+  height: 35px;
+  padding: 6px 5px 6px 5px;
+  text-align: center;
+  background-color: aliceblue;
+  cursor: pointer;
+  float: right;
+}
+
+.nav-tabs__tab:hover{
+  background-color: #51b6ff;
+}
+
+.nav-active{
+  background-color: #0094ff;
+}
