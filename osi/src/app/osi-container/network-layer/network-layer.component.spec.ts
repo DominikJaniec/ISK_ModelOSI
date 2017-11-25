@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NetworkLayerComponent } from './network-layer.component';
 
-describe('NetworkLayerComponent', () => {
+xdescribe('NetworkLayerComponent', () => {
   let component: NetworkLayerComponent;
   let fixture: ComponentFixture<NetworkLayerComponent>;
 

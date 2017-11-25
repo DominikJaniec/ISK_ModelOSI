@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PhysicalLayerComponent } from './physical-layer.component';
 
-describe('PhysicalLayerComponent', () => {
+xdescribe('PhysicalLayerComponent', () => {
   let component: PhysicalLayerComponent;
   let fixture: ComponentFixture<PhysicalLayerComponent>;
 

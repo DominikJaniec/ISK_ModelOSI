@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SessionLayerComponent } from './session-layer.component';
 
-describe('SessionLayerComponent', () => {
+xdescribe('SessionLayerComponent', () => {
   let component: SessionLayerComponent;
   let fixture: ComponentFixture<SessionLayerComponent>;
 
