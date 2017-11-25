@@ -20,6 +20,10 @@ export class OsiContainerComponent implements OnInit {
     this.uploadMode = false;
   }
 
+  getModeName() {
+    return this.uploadMode ? "Upload" : "Downlaod";
+  }
+
   ngOnInit() {
   }
 

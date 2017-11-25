@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-network-layer',
@@ -7,9 +7,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NetworkLayerComponent implements OnInit {
 
+  @Input() uploadMode: boolean;
+
   constructor() { }
 
   ngOnInit() {
   }
 
+  getModeName() {
+    return this.uploadMode ? "Upload" : "Downlaod";
+  }
 }
