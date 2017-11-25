@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { EnpointsComponent } from './enpoints/enpoints.component';
 import { FileLoaderComponent } from './file-loader/file-loader.component';
 import { OsiContainerComponent } from './osi-container/osi-container.component';
+import { ApplicationLayerComponent } from './osi-container/application-layer/application-layer.component';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import { OsiContainerComponent } from './osi-container/osi-container.component';
     AppComponent,
     EnpointsComponent,
     FileLoaderComponent,
-    OsiContainerComponent
+    OsiContainerComponent,
+    ApplicationLayerComponent
   ],
   imports: [
     BrowserModule
