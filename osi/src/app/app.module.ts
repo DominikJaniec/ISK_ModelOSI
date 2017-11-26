@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { EnpointsComponent } from './enpoints/enpoints.component';
@@ -14,7 +14,6 @@ import { NetworkLayerComponent } from './osi-container/network-layer/network-lay
 import { DatalinkLayerComponent } from './osi-container/datalink-layer/datalink-layer.component';
 import { PhysicalLayerComponent } from './osi-container/physical-layer/physical-layer.component';
 import { EndpointComponent } from './endpoint/endpoint.component';
-
 
 @NgModule({
   declarations: [
@@ -32,9 +31,10 @@ import { EndpointComponent } from './endpoint/endpoint.component';
     EndpointComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

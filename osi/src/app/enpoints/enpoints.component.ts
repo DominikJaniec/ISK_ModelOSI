@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Endpoints } from '../domain/endopoints';
 
 @Component({
   selector: 'app-enpoints',
@@ -6,12 +7,17 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./enpoints.component.css']
 })
 export class EnpointsComponent implements OnInit {
-  file: File;
+  readonly ends: Endpoints;
 
-  constructor() { }
-
-  ngOnInit() {
-      
+  constructor() {
+    this.ends = new Endpoints();
   }
 
+  ngOnInit() {
+    this.regenerate();
+  }
+
+  regenerate() {
+    this.ends.regenerate();
+  }
 }

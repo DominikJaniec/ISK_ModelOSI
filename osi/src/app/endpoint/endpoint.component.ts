@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { Endpoint } from '../domain/endopoints';
 
 @Component({
   selector: 'app-endpoint',
@@ -6,10 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./endpoint.component.css']
 })
 export class EndpointComponent implements OnInit {
+  @Input() displayName: string;
+  @Input() endpoint: Endpoint;
 
-  constructor() { }
+  constructor() {}
 
-  ngOnInit() {
-  }
-
+  ngOnInit() {}
 }
