@@ -1,86 +1,47 @@
-export class PhysicalLayer {
-  content: Block[];
-  blockSize: number;
-  displayFormat: Format;
-}
+import { Format, Symbol } from '../symbol';
 
-export enum Format {
-  Binary,
-  Octal,
-  Hexadecimal
+export class PhysicalLayer {
+  displayFormat = Format.ASCII;
+  blockSize = 16;
+  content: Block[] = [];
+
+  load(content: string) {
+    const bytes = toBytes(content);
+    const blocks: Block[] = [];
+
+    let index = 0;
+    let current = '';
+    for (let i = 0; i < bytes.length; ++i) {
+      current += Symbol.fromByte(bytes[i], this.displayFormat);
+
+      if (this.nextBlock(i)) {
+        blocks.push(this.makeBlock(index, current));
+
+        current = '';
+        ++index;
+      }
+    }
+
+    this.content = blocks;
+  }
+  private makeBlock(index: number, symbols: string) {
+    return new Block(index, this.displayFormat, symbols);
+  }
+
+  private nextBlock(i: number): boolean {
+    return i % this.blockSize === this.blockSize - 1;
+  }
 }
 
 export class Block {
-  readonly index: number;
-  readonly format: Format;
-  readonly symbols: string[];
+  constructor(
+    readonly index: number,
+    readonly format: Format,
+    readonly symbols: string
+  ) {}
 }
 
-class Symbol {
-  private static readonly SYMBOLS = '0123456789ABCDF';
-
-  static fromByte(byte: string, kind: Format): string {
-    if (byte.length !== 1) {
-      throw Symbol.toLongError(byte);
-    }
-
-    const byteCode = byte.charCodeAt(0);
-    if (byteCode < 0 || byteCode > 255) {
-      throw Symbol.invalidCodeError(byte, byteCode);
-    }
-
-    return Symbol.toValueOf(kind, byteCode);
-  }
-
-  private static toValueOf(kind: Format, code: number): string {
-    switch (kind) {
-      case Format.Binary:
-        return Symbol.toBinary(code);
-      case Format.Octal:
-        return Symbol.toOctal(code);
-      case Format.Hexadecimal:
-        return Symbol.toHexadecimal(code);
-      default:
-        throw unknownFormatError(kind);
-    }
-  }
-
-  private static toBinary(code: number): string {
-    throw new Error('Not implemented!');
-  }
-
-  private static toOctal(code: number): string {
-    throw new Error('Not implemented!');
-  }
-
-  private static toHexadecimal(code: number): string {
-    throw new Error('Not implemented!');
-  }
-
-  private static sizeFor(kind: Format): number {
-    switch (kind) {
-      case Format.Binary:
-        return 8;
-      case Format.Octal:
-        return 3;
-      case Format.Hexadecimal:
-        return 2;
-      default:
-        throw unknownFormatError(kind);
-    }
-  }
-
-  private static toLongError(byte: string): Error {
-    return new Error(`Given: '${byte}' has got size other than 1.`);
-  }
-
-  private static invalidCodeError(byte: string, code: number): Error {
-    return new Error(
-      `Given: '${byte} is not a BYTE, because its value resolves to: ${code}.`
-    );
-  }
-}
-
-function unknownFormatError(format: Format): Error {
-  return new Error(`Given: '${format}' is not known as any Format.`);
+function toBytes(data: string): number[] {
+  // TODO: We should deal also with other coding than ASCII.
+  return data.split('').map(c => c.charCodeAt(0));
 }
