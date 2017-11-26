@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Endpoint } from '../domain/endopoints';
+import { Endpoint } from '../domain/endopoint';
 
 @Component({
   selector: 'app-endpoint',

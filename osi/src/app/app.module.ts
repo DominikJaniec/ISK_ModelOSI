@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
-import { EnpointsComponent } from './enpoints/enpoints.component';
+import { EndpointComponent } from './endpoint/endpoint.component';
 import { FileLoaderComponent } from './file-loader/file-loader.component';
 import { OsiContainerComponent } from './osi-container/osi-container.component';
 import { ApplicationLayerComponent } from './osi-container/application-layer/application-layer.component';
@@ -13,12 +13,11 @@ import { TransportLayerComponent } from './osi-container/transport-layer/transpo
 import { NetworkLayerComponent } from './osi-container/network-layer/network-layer.component';
 import { DatalinkLayerComponent } from './osi-container/datalink-layer/datalink-layer.component';
 import { PhysicalLayerComponent } from './osi-container/physical-layer/physical-layer.component';
-import { EndpointComponent } from './endpoint/endpoint.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    EnpointsComponent,
+    EndpointComponent,
     FileLoaderComponent,
     OsiContainerComponent,
     ApplicationLayerComponent,
@@ -27,8 +26,7 @@ import { EndpointComponent } from './endpoint/endpoint.component';
     TransportLayerComponent,
     NetworkLayerComponent,
     DatalinkLayerComponent,
-    PhysicalLayerComponent,
-    EndpointComponent
+    PhysicalLayerComponent
   ],
   imports: [
     BrowserModule,

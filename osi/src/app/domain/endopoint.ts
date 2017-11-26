@@ -1,20 +1,3 @@
-export class Endpoints {
-  sender: Endpoint;
-  receiver: Endpoint;
-
-  constructor() {
-    this.sender = new Endpoint();
-    this.sender.regenerate();
-    this.receiver = new Endpoint();
-    this.receiver.regenerate();
-  }
-
-  regenerate() {
-    this.sender.regenerate();
-    this.receiver.regenerate();
-  }
-}
-
 export class Endpoint {
   mac: string;
   ip: string;

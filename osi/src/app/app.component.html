@@ -1,11 +1,16 @@
 <div class="container">
   <div class="row">
-    <div class="col-md-3">
-      <app-enpoints></app-enpoints>
+    <div class="col-md-2">
+      <app-endpoint [endpoint]="sender" [displayName]="'Nadawca'"></app-endpoint>
       <app-file-loader></app-file-loader>
     </div>
-    <div class="col-md-9">
+
+    <div class="col-md-8">
       <app-osi-container></app-osi-container>
+    </div>
+
+    <div class="col-md-2">
+      <app-endpoint [endpoint]="receiver" [displayName]="'Odbiorca'"></app-endpoint>
     </div>
   </div>
 </div>
