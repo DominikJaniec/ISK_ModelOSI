@@ -2,9 +2,16 @@ export class Endpoints {
   sender: Endpoint;
   receiver: Endpoint;
 
+  constructor() {
+    this.sender = new Endpoint();
+    this.sender.regenerate();
+    this.receiver = new Endpoint();
+    this.receiver.regenerate();
+  }
+
   regenerate() {
-    this.sender = Endpoint.generate();
-    this.receiver = Endpoint.generate();
+    this.sender.regenerate();
+    this.receiver.regenerate();
   }
 }
 
@@ -13,34 +20,26 @@ export class Endpoint {
   ip: string;
   port: number;
 
-  static generate(): Endpoint {
-    const result = new Endpoint();
-    result.mac = NetMac.random();
-    result.ip = NetIp4.random();
-    result.port = NetPort.random();
-
-    return result;
-  }
-
-  static randomPort(): number {
-    return Math.random();
+  regenerate() {
+    this.mac = NetMac.random();
+    this.ip = NetIp4.random();
+    this.port = NetPort.random();
   }
 }
 
 export class NetMac {
-  static SEPARATORS = [':', '-', '.'];
+  static SEPARATORS = ['-', ':', '.'];
   static LENGTH = 12;
   static HEX_MATCH = new RegExp('^[0-9A-Fa-f]{' + NetMac.LENGTH + '}$');
 
   static random(): string {
-    let result = '';
-    const values = '0123456789ABCDEF';
-    for (let i = 0; i < NetMac.LENGTH; ++i) {
-      const index = Math.floor(Math.random() * values.length);
-      result += values[index];
+    const hexPairs: String[] = [];
+    for (let i = 0; i < NetMac.LENGTH; i += 2) {
+      const pair = '' + NetMac.randomHex() + NetMac.randomHex();
+      hexPairs.push(pair);
     }
 
-    return result;
+    return hexPairs.join(NetMac.SEPARATORS[0]);
   }
 
   static isValid(address: string): boolean {
@@ -50,6 +49,13 @@ export class NetMac {
     }
 
     return NetMac.HEX_MATCH.test(mac);
+  }
+
+  private static randomHex(): String {
+    const hexes = '0123456789ABCDEF';
+    const index = Math.floor(Math.random() * hexes.length);
+
+    return hexes[index];
   }
 }
 
