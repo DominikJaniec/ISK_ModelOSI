@@ -1,3 +1,14 @@
-<p>
-  file-loader works!
-</p>
+
+<div class="info">
+  Prześlij plik tekstowy (.txt)
+</div>
+  <input type="file" (change)="fileChange($event)" placeholder="Upload file" accept=".txt">
+
+<div *ngIf="isFileUploaded">
+  Zawartośc pliku:
+  <div class="file-content">
+    {{fileText}}
+  </div>
+</div>
+<h4>{{allertText}}</h4>
+

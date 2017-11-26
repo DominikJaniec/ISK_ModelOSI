@@ -6,10 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./enpoints.component.css']
 })
 export class EnpointsComponent implements OnInit {
+  file: File;
 
   constructor() { }
 
   ngOnInit() {
+      
   }
 
 }
