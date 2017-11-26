@@ -7,7 +7,7 @@ export enum Format {
 }
 
 export class Symbol {
-  private static readonly SYMBOLS = '0123456789ABCDF';
+  private static readonly SYMBOLS = '0123456789ABCDEF';
   private static readonly BYTE_MAX = 255;
 
   static fromByte(byte: number, kind: Format): string {

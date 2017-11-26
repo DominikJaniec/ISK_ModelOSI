@@ -1,8 +1,8 @@
 import { Format, Symbol } from '../symbol';
 
 export class PhysicalLayer {
-  displayFormat = Format.ASCII;
-  blockSize = 16;
+  displayFormat = Format.Hexadecimal;
+  bytesBlockSize = 32;
   content: Block[] = [];
 
   load(content: string) {
@@ -22,14 +22,20 @@ export class PhysicalLayer {
       }
     }
 
+    if (current !== '') {
+      // TODO: Should we provide padding to block's size?
+      blocks.push(this.makeBlock(index, current));
+    }
+
     this.content = blocks;
   }
+
   private makeBlock(index: number, symbols: string) {
     return new Block(index, this.displayFormat, symbols);
   }
 
   private nextBlock(i: number): boolean {
-    return i % this.blockSize === this.blockSize - 1;
+    return i % this.bytesBlockSize === this.bytesBlockSize - 1;
   }
 }
 

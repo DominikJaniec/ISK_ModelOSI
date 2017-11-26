@@ -1,4 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { PhysicalLayer } from '../../domain/layers/physical';
+import { Format } from '../../domain/symbol';
 
 @Component({
   selector: 'app-physical-layer',
@@ -6,15 +8,25 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./physical-layer.component.css']
 })
 export class PhysicalLayerComponent implements OnInit {
-
   @Input() uploadMode: boolean;
+  readonly layer: PhysicalLayer;
 
-  constructor() { }
+  constructor() {
+    this.layer = new PhysicalLayer();
+    this.layer.bytesBlockSize = 8;
+    this.layer.displayFormat = Format.Hexadecimal;
+  }
 
-  ngOnInit() {
+  ngOnInit() {}
+  fakeChanged(fakedUserInput: string) {
+    this.layer.load(fakedUserInput);
+  }
+
+  getFormat(): string {
+    return Format[this.layer.displayFormat];
   }
 
   getModeName() {
-    return this.uploadMode ? "Upload" : "Downlaod";
+    return this.uploadMode ? 'Upload' : 'Downlaod';
   }
 }

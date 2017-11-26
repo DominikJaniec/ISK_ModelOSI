@@ -1,3 +1,13 @@
 <div class="physical-layer__container">
   physical-layer works in {{getModeName()}} Mode!
+  <section>
+    <input #fake placeholder="fake input" (blur)="fakeChanged(fake.value)">
+    <span>Block size: {{layer.bytesBlockSize}} bytes.</span>
+    <span>Format: {{getFormat()}}.</span>
+  </section>
+  <section>
+    <pre *ngFor="let block of layer.content">
+      {{block.index}}. "{{block.symbols}}"
+    </pre>
+  </section>
 </div>
