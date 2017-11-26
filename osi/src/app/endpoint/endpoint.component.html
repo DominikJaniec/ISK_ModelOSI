@@ -1,0 +1,16 @@
+<section class="endpoint">
+  <header>{{displayName}}</header>
+  <section class="addr-ip-port">
+    <span>IP:</span>
+    <input class="ip" placeholder="Adres IP" [(ngModel)]="endpoint.ip">
+    <span>Port:</span>
+    <input class="port" placeholder="Port" [(ngModel)]="endpoint.port">
+  </section>
+  <section class="addr-mac">
+    <span>MAC:</span>
+    <input placeholder="Adres MAC" [(ngModel)]="endpoint.mac">
+  </section>
+  <section class="generate">
+    <button (click)="endpoint.regenerate()">Losuj nowy</button>
+  </section>
+</section>

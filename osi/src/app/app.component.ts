@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Endpoint } from './domain/endopoint';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,14 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+  sender: Endpoint;
+  receiver: Endpoint;
+
+  constructor() {
+    this.sender = new Endpoint();
+    this.sender.regenerate();
+
+    this.receiver = new Endpoint();
+    this.receiver.regenerate();
+  }
 }
