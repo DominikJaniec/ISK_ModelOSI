@@ -13,6 +13,7 @@ import { TransportLayerComponent } from './osi-container/transport-layer/transpo
 import { NetworkLayerComponent } from './osi-container/network-layer/network-layer.component';
 import { DatalinkLayerComponent } from './osi-container/datalink-layer/datalink-layer.component';
 import { PhysicalLayerComponent } from './osi-container/physical-layer/physical-layer.component';
+import { OrchestratorService } from './orchestrator.service';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,7 @@ import { PhysicalLayerComponent } from './osi-container/physical-layer/physical-
     BrowserModule,
     FormsModule
   ],
-  providers: [],
+  providers: [OrchestratorService],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
