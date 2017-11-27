@@ -7,15 +7,15 @@ import { Direction, translateDirection } from '../domain/directions';
   styleUrls: ['./osi-container.component.css']
 })
 export class OsiContainerComponent implements OnInit {
+  readonly senderDirection = Direction.Sender;
+  readonly receiverDirection = Direction.Receiver;
   readonly senderName = translateDirection(Direction.Sender);
   readonly receiverName = translateDirection(Direction.Receiver);
 
   direction: Direction;
-  directionName: string;
 
   constructor() {
     this.direction = Direction.Sender;
-    this.directionName = this.senderName;
   }
 
   ngOnInit() {}
@@ -23,17 +23,16 @@ export class OsiContainerComponent implements OnInit {
   isSenderActive(): boolean {
     return this.direction === Direction.Sender;
   }
+
   isReceiverActive(): boolean {
     return this.direction === Direction.Receiver;
   }
 
   showSender() {
     this.direction = Direction.Sender;
-    this.directionName = this.senderName;
   }
 
   showReceiver() {
     this.direction = Direction.Receiver;
-    this.directionName = this.receiverName;
   }
 }

@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { EndpointComponent } from './endpoint/endpoint.component';
 import { FileLoaderComponent } from './file-loader/file-loader.component';
 import { OsiContainerComponent } from './osi-container/osi-container.component';
+import { OsiStackComponent } from './osi-container/osi-stack.component';
 import { ApplicationLayerComponent } from './osi-container/application-layer/application-layer.component';
 import { PresentationLayerComponent } from './osi-container/presentation-layer/presentation-layer.component';
 import { SessionLayerComponent } from './osi-container/session-layer/session-layer.component';
@@ -21,6 +22,7 @@ import { OrchestratorService } from './orchestrator.service';
     EndpointComponent,
     FileLoaderComponent,
     OsiContainerComponent,
+    OsiStackComponent,
     ApplicationLayerComponent,
     PresentationLayerComponent,
     SessionLayerComponent,
@@ -33,7 +35,9 @@ import { OrchestratorService } from './orchestrator.service';
     BrowserModule,
     FormsModule
   ],
-  providers: [OrchestratorService],
+  providers: [
+    OrchestratorService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
