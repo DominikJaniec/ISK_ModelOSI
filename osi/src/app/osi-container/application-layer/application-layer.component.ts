@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Direction, translateDirection } from '../../domain/directions';
 
 @Component({
   selector: 'app-application-layer',
@@ -6,15 +7,13 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./application-layer.component.css']
 })
 export class ApplicationLayerComponent implements OnInit {
+  @Input() direction: Direction;
 
-  @Input() uploadMode: boolean;
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getModeName() {
-    return this.uploadMode ? "Upload" : "Downlaod";
+    return translateDirection(this.direction);
   }
 }

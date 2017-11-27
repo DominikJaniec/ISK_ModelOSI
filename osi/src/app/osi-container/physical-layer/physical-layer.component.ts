@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { PhysicalLayer } from '../../domain/layers/physical';
 import { Format } from '../../domain/symbol';
+import { Direction, translateDirection } from '../../domain/directions';
 
 @Component({
   selector: 'app-physical-layer',
@@ -8,7 +9,7 @@ import { Format } from '../../domain/symbol';
   styleUrls: ['./physical-layer.component.css']
 })
 export class PhysicalLayerComponent implements OnInit {
-  @Input() uploadMode: boolean;
+  @Input() direction: Direction;
   readonly layer: PhysicalLayer;
 
   constructor() {
@@ -27,6 +28,6 @@ export class PhysicalLayerComponent implements OnInit {
   }
 
   getModeName() {
-    return this.uploadMode ? 'Upload' : 'Downlaod';
+    return translateDirection(this.direction);
   }
 }

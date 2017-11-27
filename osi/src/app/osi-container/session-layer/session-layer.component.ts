@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import { Direction, translateDirection } from '../../domain/directions';
 
 @Component({
   selector: 'app-session-layer',
@@ -6,15 +7,13 @@ import { Component, OnInit, Input } from '@angular/core';
   styleUrls: ['./session-layer.component.css']
 })
 export class SessionLayerComponent implements OnInit {
+  @Input() direction: Direction;
 
-  @Input() uploadMode: boolean;
+  constructor() {}
 
-  constructor() { }
-
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   getModeName() {
-    return this.uploadMode ? "Upload" : "Downlaod";
+    return translateDirection(this.direction);
   }
 }
