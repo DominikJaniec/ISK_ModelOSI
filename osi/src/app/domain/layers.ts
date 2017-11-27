@@ -1,7 +1,6 @@
 import { Direction } from './directions';
 
 export enum LayerKind {
-  ContentInput,
   Application,
   Presentation,
   Session,

@@ -27,5 +27,7 @@ export class OrchestratorService {
 
   navigate(action: NavigatorAction) {}
 
+  inputReady(data: LayerData) {}
+
   ready(layerId: LayerId, data: LayerData) {}
 }

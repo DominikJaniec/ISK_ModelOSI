@@ -1,8 +1,7 @@
-
 <div class="info">
   Prześlij plik tekstowy (.txt)
 </div>
-  <input type="file" (change)="fileChange($event)" placeholder="Upload file" accept=".txt">
+<input type="file" (change)="fileChange($event)" placeholder="Upload file" accept=".txt">
 
 <div *ngIf="isFileUploaded">
   Zawartośc pliku:
@@ -10,5 +9,4 @@
     {{fileText}}
   </div>
 </div>
-<h4>{{allertText}}</h4>
-
+<h4>{{alertText}}</h4>
