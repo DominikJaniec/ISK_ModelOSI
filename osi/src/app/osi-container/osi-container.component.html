@@ -4,54 +4,18 @@
   </div>
   <div class="row">
     <div class="nav-tabs col-md-12">
-      <div class="nav-tabs__tab col-md-6" [ngClass]="{'nav-active':!uploadMode}" (click)="setDownloadMode()">Downlaod</div>
-      <div class="nav-tabs__tab col-md-6" [ngClass]="{'nav-active':uploadMode}" (click)="setUploadMode()">Upload</div>
+      <div class="nav-tabs__tab col-md-6" [ngClass]="{'nav-active':isReceiverActive()}" (click)="showReceiver()">{{receiverName}}</div>
+      <div class="nav-tabs__tab col-md-6" [ngClass]="{'nav-active':isSenderActive()}" (click)="showSender()">{{senderName}}</div>
     </div>
   </div>
-    <div class="tab-content">
-      <div>
-        <div class="col-md-12">
-          <h2>{{getModeName()}} Mode</h2>
-          <div class="collapse__header" data-toggle="collapse" data-target="#application-layer">Warstwa Aplikacji</div>
-          <div id="application-layer" class="collapse">
-            <app-application-layer [uploadMode]="uploadMode"></app-application-layer>
-          </div>
-
-          <div class="collapse__header" data-toggle="collapse" data-target="#presentation-layer">Warstwa Prezentacji</div>
-          <div id="presentation-layer" class="collapse">
-            <app-presentation-layer [uploadMode]="uploadMode"></app-presentation-layer>
-          </div>
-
-          <div class="collapse__header" data-toggle="collapse" data-target="#session-layer">Warstwa Sesji</div>
-          <div id="session-layer" class="collapse">
-            <app-session-layer [uploadMode]="uploadMode"></app-session-layer>
-          </div>
-
-          <div class="collapse__header" data-toggle="collapse" data-target="#transport-layer">Warstwa Transportowa</div>
-          <div id="transport-layer" class="collapse">
-            <app-transport-layer [uploadMode]="uploadMode"></app-transport-layer>
-          </div>
-
-          <div class="collapse__header" data-toggle="collapse" data-target="#network-layer">Warstwa Sieci</div>
-          <div id="network-layer" class="collapse">
-            <app-network-layer [uploadMode]="uploadMode"></app-network-layer>
-          </div>
-
-          <div class="collapse__header" data-toggle="collapse" data-target="#datalink-layer">Warstwa Łącza Danych</div>
-          <div id="datalink-layer" class="collapse">
-            <app-datalink-layer [uploadMode]="uploadMode"></app-datalink-layer>
-          </div>
-
-          <div class="collapse__header" data-toggle="collapse" data-target="#physical-layer">Warstwa Fizyczna</div>
-          <div id="physical-layer" class="collapse">
-            <app-physical-layer [uploadMode]="uploadMode"></app-physical-layer>
-          </div>
-        </div>
+  <div class="tab-content">
+    <div class="row">
+      <div class="col-md-6">
+        <app-osi-stack [direction]="senderDirection"></app-osi-stack>
+      </div>
+      <div class="col-md-6">
+        <app-osi-stack [direction]="receiverDirection"></app-osi-stack>
       </div>
     </div>
-
-  <div class="row">
   </div>
 </div>
-
-        

@@ -1,0 +1,9 @@
+.collapse__header {
+  background-color: #0094ff;
+  padding: 5px 15px 5px 15px;
+  cursor: pointer;
+}
+
+.collapse__header:hover {
+  background-color: #51b6ff;
+}

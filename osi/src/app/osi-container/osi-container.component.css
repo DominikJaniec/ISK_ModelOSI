@@ -1,21 +1,12 @@
-.collapse__header{
-  background-color: #0094ff;
-  padding: 5px 15px 5px 15px;
-  cursor: pointer;
-}
-
-.collapse__header:hover{
-  background-color: #51b6ff;
-}
-.in{
+.in {
   display: block;
 }
 
-.active{
+.active {
   display: block;
 }
 
-.nav-tabs__tab{
+.nav-tabs__tab {
   height: 35px;
   padding: 6px 5px 6px 5px;
   text-align: center;
@@ -24,10 +15,10 @@
   float: right;
 }
 
-.nav-tabs__tab:hover{
+.nav-tabs__tab:hover {
   background-color: #51b6ff;
 }
 
-.nav-active{
+.nav-active {
   background-color: #0094ff;
 }

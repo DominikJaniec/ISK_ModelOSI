@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Direction, translateDirection } from '../domain/directions';
 
 @Component({
   selector: 'app-osi-container',
@@ -6,25 +7,32 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./osi-container.component.css']
 })
 export class OsiContainerComponent implements OnInit {
-  public uploadMode: boolean;
+  readonly senderDirection = Direction.Sender;
+  readonly receiverDirection = Direction.Receiver;
+  readonly senderName = translateDirection(Direction.Sender);
+  readonly receiverName = translateDirection(Direction.Receiver);
+
+  direction: Direction;
 
   constructor() {
-    this.uploadMode = true;
+    this.direction = Direction.Sender;
   }
 
-  setUploadMode() {
-    this.uploadMode = true;
+  ngOnInit() {}
+
+  isSenderActive(): boolean {
+    return this.direction === Direction.Sender;
   }
 
-  setDownloadMode() {
-    this.uploadMode = false;
+  isReceiverActive(): boolean {
+    return this.direction === Direction.Receiver;
   }
 
-  getModeName() {
-    return this.uploadMode ? "Upload" : "Downlaod";
+  showSender() {
+    this.direction = Direction.Sender;
   }
 
-  ngOnInit() {
+  showReceiver() {
+    this.direction = Direction.Receiver;
   }
-
 }
