@@ -45,7 +45,7 @@ export class FileLoaderComponent implements OnInit, OnDestroy {
       this.fileText = fileContent;
       log('onloaded', fileContent);
 
-      this.orchestrator.dataReady(contentToData(this.reader));
+      this.orchestrator.initializeFlow(contentToData(this.reader));
     };
   }
 }

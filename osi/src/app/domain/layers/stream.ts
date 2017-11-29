@@ -5,7 +5,7 @@ import { LayerKind, LayerId, LayerData, orderFor } from '../layers';
 
 export class LayersStream {
   private readonly map: LayersMap;
-  readonly head: StreamElement;
+  readonly headId: LayerId;
 
   constructor() {
     const receiverPart = generateFor(Direction.Receiver, null);
@@ -16,25 +16,25 @@ export class LayersStream {
     map[Direction.Sender] = senderPart.map;
     this.map = map;
 
-    this.head = senderPart.head;
+    this.headId = senderPart.head.id;
   }
 
-  for(layerId: LayerId): StreamElement {
+  for(layerId: LayerId): StreamLayer {
     return this.map[layerId.direction][layerId.kind];
   }
 
-  downstreamFrom(layerId: LayerId): StreamElement {
+  downstreamFrom(layerId: LayerId): StreamLayer {
     return this.for(layerId).downstream;
   }
 }
 
-export class StreamElement {
-  private readonly id: LayerId;
-  readonly downstream: StreamElement;
+export class StreamLayer {
+  readonly id: LayerId;
+  readonly downstream: StreamLayer;
   readonly dataSubject: Subject<LayerData>;
   readonly clearFromSubject: Subject<{}>;
 
-  constructor(id: LayerId, downstream: StreamElement = null) {
+  constructor(id: LayerId, downstream: StreamLayer = null) {
     this.id = id;
     this.downstream = downstream;
     this.dataSubject = new Subject<LayerData>();
@@ -51,20 +51,20 @@ interface LayersMap {
 }
 
 interface PartMap {
-  readonly [layer: number]: StreamElement;
+  readonly [layer: number]: StreamLayer;
 }
 
 interface Part {
-  readonly head: StreamElement;
+  readonly head: StreamLayer;
   readonly map: PartMap;
 }
 
-function generateFor(direction: Direction, previous: StreamElement): Part {
+function generateFor(direction: Direction, previous: StreamLayer): Part {
   const map = {};
 
   for (const layer of orderFor(direction).reverse()) {
     const id: LayerId = { kind: layer, direction: direction };
-    const element = new StreamElement(id, previous);
+    const element = new StreamLayer(id, previous);
 
     map[layer] = element;
     previous = element;

@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Direction } from './domain/directions';
 import { LayerKind, LayerId, DataBlock, LayerData } from './domain/layers';
-import { LayersStream, StreamElement } from './domain/layers/stream';
+import { LayersStream, StreamLayer } from './domain/layers/stream';
 
 export enum NavigatorBehavior {
   AutoContinue,
@@ -28,19 +28,32 @@ export interface LayerObservables {
   readonly layerData: Observable<LayerData>;
 }
 
+export enum LogEvent {
+  Progress,
+  ClearDownstream,
+  InitializeFlow,
+  DataPush,
+  DataReady
+}
+
+export interface LogEntry {
+  event: LogEvent;
+  data: any;
+}
+
 @Injectable()
 export class OrchestratorService {
   private readonly progressSubject = new Subject<ProgressData>();
+  private readonly loggerSubject = new Subject<LogEntry>();
   private readonly layersStream = new LayersStream();
 
-  private currentLayerId: LayerId;
-  private currentData: LayerData;
+  private readyLayerId: LayerId;
+  private readyLayerData: LayerData;
   private isWaiting = false;
   private behavior = NavigatorBehavior.AutoContinue;
 
   registerLayer(layerId: LayerId): LayerObservables {
     const layer = this.layersStream.for(layerId);
-
     return {
       clearStream: layer.clearFromSubject.asObservable(),
       layerData: layer.dataSubject.asObservable()
@@ -51,10 +64,16 @@ export class OrchestratorService {
     return this.progressSubject.asObservable();
   }
 
-  dataReady(data: DataBlock) {
-    this.layersStream.head.clearFromSubject.next();
-    this.layersStream.head.dataSubject.next({ blocks: [data] });
-    this.notifyBeginning();
+  registerLogger(): Observable<LogEntry> {
+    return this.loggerSubject.asObservable();
+  }
+
+  initializeFlow(data: DataBlock) {
+    this.logInitializeFlow(data);
+    this.notifyProgress({ progress: Progress.Beginning });
+    this.layersStream
+      .for(this.layersStream.headId)
+      .dataSubject.next({ blocks: [data] });
   }
 
   navigate(action: NavigatorBehavior) {
@@ -69,58 +88,67 @@ export class OrchestratorService {
     }
 
     if (this.isWaiting) {
-      this.pushIntoDownstream();
+      this.pushIntoDownstreamOf(this.readyLayerId, this.readyLayerData);
     }
   }
 
   ready(layerId: LayerId, data: LayerData) {
-    this.currentLayerId = layerId;
-    this.currentData = data;
+    this.logDataFlow(LogEvent.DataPush, layerId, data);
+    this.readyLayerId = layerId;
+    this.readyLayerData = data;
+
+    this.notifyProgressStep(layerId);
+    this.clearDownstreamFrom(layerId);
+
     this.isWaiting = true;
-
-    this.notifyProgressStep();
-    this.clearFromCurrent();
-
     if (this.behavior === NavigatorBehavior.AutoContinue) {
-      this.pushIntoDownstream();
+      this.pushIntoDownstreamOf(layerId, data);
     }
   }
 
-  private pushIntoDownstream() {
+  private clearDownstreamFrom(layerId: LayerId) {
+    this.logDataFlow(LogEvent.ClearDownstream, layerId);
+    this.layersStream.downstreamFrom(layerId).clearFromSubject.next();
+  }
+
+  private pushIntoDownstreamOf(layerId: LayerId, data: LayerData) {
     this.isWaiting = false;
-    const downstreamLayer = this.currentDownstream();
-
-    if (downstreamLayer !== null) {
-      downstreamLayer.dataSubject.next(this.currentData);
+    const downstream = this.layersStream.downstreamFrom(layerId);
+    if (downstream !== null) {
+      this.logDataFlow(LogEvent.DataPush, layerId, data);
+      downstream.dataSubject.next(data);
     } else {
-      this.notifyFinished();
+      this.notifyProgress({ progress: Progress.Finished });
     }
   }
 
-  private currentDownstream(): StreamElement {
-    return this.layersStream.downstreamFrom(this.currentLayerId);
-  }
-
-  private clearFromCurrent() {
-    this.layersStream.for(this.currentLayerId).clearFromSubject.next();
-  }
-
-  private notifyBeginning() {
-    this.progressSubject.next({
-      progress: Progress.Beginning
-    });
-  }
-
-  private notifyProgressStep() {
-    this.progressSubject.next({
+  private notifyProgressStep(layerId: LayerId) {
+    this.notifyProgress({
       progress: Progress.LayerStep,
-      layerId: this.currentLayerId
+      layerId: layerId
     });
   }
 
-  private notifyFinished() {
-    this.progressSubject.next({
-      progress: Progress.Finished
+  private notifyProgress(data: ProgressData) {
+    this.loggerSubject.next({ event: LogEvent.Progress, data: data });
+    this.progressSubject.next(data);
+  }
+
+  private logInitializeFlow(dataBlock: DataBlock) {
+    this.loggerSubject.next({
+      event: LogEvent.InitializeFlow,
+      data: dataBlock
+    });
+  }
+
+  private logDataFlow(
+    flow: LogEvent,
+    layerId: LayerId,
+    layerData: LayerData = null
+  ) {
+    this.loggerSubject.next({
+      event: flow,
+      data: { source: layerId, layerData: layerData }
     });
   }
 }
