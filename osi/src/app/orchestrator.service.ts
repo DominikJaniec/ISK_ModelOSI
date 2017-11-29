@@ -38,11 +38,7 @@ export class OrchestratorService {
   private isWaiting = false;
   private behavior = NavigatorBehavior.AutoContinue;
 
-  registerLayer(layerId: LayerId): Observable<LayerData> {
-    return this.registerLayer_new(layerId).layerData;
-  }
-
-  registerLayer_new(layerId: LayerId): LayerObservables {
+  registerLayer(layerId: LayerId): LayerObservables {
     const layer = this.layersStream.for(layerId);
 
     return {
@@ -127,4 +123,13 @@ export class OrchestratorService {
       progress: Progress.Finished
     });
   }
+}
+
+export function registerDummyRepeater(
+  layerId: LayerId,
+  orchestrator: OrchestratorService
+): Subscription {
+  return orchestrator
+    .registerLayer(layerId)
+    .layerData.subscribe(data => orchestrator.ready(layerId, data));
 }
