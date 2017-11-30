@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { OrchestratorService } from '../../orchestrator.service';
+import {
+  OrchestratorService,
+  registerDummyRepeater
+} from '../../orchestrator.service';
 import { Direction, translateDirection } from '../../domain/directions';
 import { LayerKind, LayerData, LayerId } from '../../domain/layers';
 import { PhysicalLayer } from '../../domain/layers/physical';
@@ -17,19 +20,20 @@ export class PhysicalLayerComponent implements OnInit, OnDestroy {
   readonly layer: PhysicalLayer;
   @Input() direction: Direction;
 
-  constructor(private orchestrator: OrchestratorService) {
+  constructor(private readonly orchestrator: OrchestratorService) {
     this.layer = new PhysicalLayer();
     this.layer.bytesBlockSize = 8;
     this.layer.displayFormat = Format.Hexadecimal;
   }
 
   ngOnInit() {
-    this.subscription = this.orchestrator
-      .registerLayer({
+    this.subscription = registerDummyRepeater(
+      {
         kind: LayerKind.Physical,
         direction: this.direction
-      })
-      .subscribe(this.handleDate);
+      },
+      this.orchestrator
+    );
   }
 
   ngOnDestroy() {
@@ -47,6 +51,4 @@ export class PhysicalLayerComponent implements OnInit, OnDestroy {
   getFormat(): string {
     return Format[this.layer.displayFormat];
   }
-
-  private handleDate(data: LayerData) {}
 }

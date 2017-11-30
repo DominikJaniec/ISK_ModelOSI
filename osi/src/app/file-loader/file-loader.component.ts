@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 
 import { OrchestratorService } from '../orchestrator.service';
-import { LayerData } from '../domain/layers';
+import { DataBlock } from '../domain/layers';
 
 @Component({
   selector: 'app-file-loader',
@@ -16,7 +16,7 @@ export class FileLoaderComponent implements OnInit, OnDestroy {
   fileText: string;
   alertText: string;
 
-  constructor(private orchestrator: OrchestratorService) {}
+  constructor(private readonly orchestrator: OrchestratorService) {}
 
   ngOnInit() {}
   ngOnDestroy() {}
@@ -45,12 +45,12 @@ export class FileLoaderComponent implements OnInit, OnDestroy {
       this.fileText = fileContent;
       log('onloaded', fileContent);
 
-      this.orchestrator.inputReady(contentToBytes(this.reader));
+      this.orchestrator.initializeFlow(contentToData(this.reader));
     };
   }
 }
 
-function contentToBytes(reader: FileReader): LayerData {
+function contentToData(reader: FileReader): DataBlock {
   // TODO: Load data as bytes, use encoding?
   return { bytes: [] };
 }

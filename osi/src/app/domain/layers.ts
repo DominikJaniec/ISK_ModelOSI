@@ -15,6 +15,33 @@ export interface LayerId {
   readonly direction: Direction;
 }
 
-export interface LayerData {
+export interface DataBlock {
   readonly bytes: number[];
+}
+
+export interface LayerData {
+  readonly blocks: DataBlock[];
+}
+
+export function orderFor(direction: Direction): LayerKind[] {
+  const senderOrder = [
+    LayerKind.Application,
+    LayerKind.Presentation,
+    LayerKind.Session,
+    LayerKind.Transport,
+    LayerKind.Network,
+    LayerKind.DataLink,
+    LayerKind.Physical
+  ];
+
+  switch (direction) {
+    case Direction.Sender:
+      return senderOrder;
+
+    case Direction.Receiver:
+      return senderOrder.reverse();
+
+    default:
+      throw new Error(`Unknown value: '${direction} for the 'Direction'.`);
+  }
 }

@@ -1,33 +1,179 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
+import { Subscription } from 'rxjs/Subscription';
 
 import { Direction } from './domain/directions';
-import { LayerKind, LayerId, LayerData } from './domain/layers';
+import { LayerKind, LayerId, DataBlock, LayerData } from './domain/layers';
+import { LayersStream, StreamLayer } from './domain/layers/stream';
 
-export enum NavigatorAction {
+export enum NavigatorBehavior {
   AutoContinue,
   BreakOnNext
 }
 
+export enum Progress {
+  Beginning,
+  LayerStep,
+  Finished
+}
+
+export interface ProgressData {
+  progress: Progress;
+  layerId?: LayerId;
+}
+
+export interface LayerObservables {
+  readonly clearStream: Observable<{}>;
+  readonly layerData: Observable<LayerData>;
+}
+
+export enum LogEvent {
+  Progress,
+  ClearDownstream,
+  InitializeFlow,
+  DataPush,
+  DataReady
+}
+
+export interface LogEntry {
+  event: LogEvent;
+  data: any;
+}
+
 @Injectable()
 export class OrchestratorService {
-  private readyLayers = new Subject<LayerId>();
-  private layersData = new Subject<LayerData>();
+  private readonly progressSubject = new Subject<ProgressData>();
+  private readonly loggerSubject = new Subject<LogEntry>();
+  private readonly layersStream = new LayersStream();
 
-  constructor() {}
+  private readyLayerId: LayerId;
+  private readyLayerData: LayerData;
+  private isWaiting = false;
+  private behavior = NavigatorBehavior.AutoContinue;
 
-  registerLayer(layerId: LayerId): Observable<LayerData> {
-    return this.layersData.asObservable();
+  registerLayer(layerId: LayerId): LayerObservables {
+    const layer = this.layersStream.for(layerId);
+    return {
+      clearStream: layer.clearFromSubject.asObservable(),
+      layerData: layer.dataSubject.asObservable()
+    };
   }
 
-  registerNavigator(): Observable<LayerId> {
-    return this.readyLayers.asObservable();
+  registerNavigator(): Observable<ProgressData> {
+    return this.progressSubject.asObservable();
   }
 
-  navigate(action: NavigatorAction) {}
+  registerLogger(): Observable<LogEntry> {
+    return this.loggerSubject.asObservable();
+  }
 
-  inputReady(data: LayerData) {}
+  initializeFlow(data: DataBlock) {
+    this.logInitializeFlow(data);
+    this.notifyProgress({ progress: Progress.Beginning });
+    this.layersStream
+      .for(this.layersStream.headId)
+      .dataSubject.next({ blocks: [data] });
+  }
 
-  ready(layerId: LayerId, data: LayerData) {}
+  navigate(action: NavigatorBehavior) {
+    switch (action) {
+      case NavigatorBehavior.BreakOnNext:
+      case NavigatorBehavior.AutoContinue:
+        this.behavior = action;
+        break;
+
+      default:
+        throw new Error(`Unknown kind of behavior: '${this.behavior}'.`);
+    }
+
+    if (this.isWaiting) {
+      this.pushIntoDownstreamOf(this.readyLayerId, this.readyLayerData);
+    }
+  }
+
+  ready(layerId: LayerId, data: LayerData) {
+    this.logDataFlow(LogEvent.DataReady, layerId, data);
+    this.readyLayerId = layerId;
+    this.readyLayerData = data;
+
+    this.notifyProgressStep(layerId);
+    this.clearDownstreamFrom(layerId);
+
+    this.isWaiting = true;
+    if (this.behavior === NavigatorBehavior.AutoContinue) {
+      this.pushIntoDownstreamOf(layerId, data);
+    }
+  }
+
+  private clearDownstreamFrom(layerId: LayerId) {
+    this.logDataFlow(LogEvent.ClearDownstream, layerId);
+    this.withDownstreamOf(layerId, downstream =>
+      downstream.clearFromSubject.next()
+    );
+  }
+
+  private pushIntoDownstreamOf(layerId: LayerId, data: LayerData) {
+    this.isWaiting = false;
+    this.withDownstreamOf(
+      layerId,
+      downstream => {
+        this.logDataFlow(LogEvent.DataPush, layerId, data);
+        downstream.dataSubject.next(data);
+      },
+      () => this.notifyProgress({ progress: Progress.Finished })
+    );
+  }
+
+  private withDownstreamOf(
+    layerId: LayerId,
+    whenHas: (layer: StreamLayer) => void,
+    whenHasNot: () => void = null
+  ) {
+    const downstream = this.layersStream.downstreamFrom(layerId);
+    if (downstream !== null) {
+      whenHas(downstream);
+    } else if (whenHasNot !== null) {
+      whenHasNot();
+    }
+  }
+
+  private notifyProgressStep(layerId: LayerId) {
+    this.notifyProgress({
+      progress: Progress.LayerStep,
+      layerId: layerId
+    });
+  }
+
+  private notifyProgress(data: ProgressData) {
+    this.loggerSubject.next({ event: LogEvent.Progress, data: data });
+    this.progressSubject.next(data);
+  }
+
+  private logInitializeFlow(dataBlock: DataBlock) {
+    this.loggerSubject.next({
+      event: LogEvent.InitializeFlow,
+      data: dataBlock
+    });
+  }
+
+  private logDataFlow(
+    flow: LogEvent,
+    layerId: LayerId,
+    layerData: LayerData = null
+  ) {
+    this.loggerSubject.next({
+      event: flow,
+      data: { source: layerId, layerData: layerData }
+    });
+  }
+}
+
+export function registerDummyRepeater(
+  layerId: LayerId,
+  orchestrator: OrchestratorService
+): Subscription {
+  return orchestrator
+    .registerLayer(layerId)
+    .layerData.subscribe(data => orchestrator.ready(layerId, data));
 }

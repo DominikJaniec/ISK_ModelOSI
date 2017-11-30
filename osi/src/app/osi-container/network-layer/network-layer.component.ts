@@ -1,7 +1,10 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
-import { OrchestratorService } from '../../orchestrator.service';
+import {
+  OrchestratorService,
+  registerDummyRepeater
+} from '../../orchestrator.service';
 import { Direction, translateDirection } from '../../domain/directions';
 import { LayerKind, LayerData, LayerId } from '../../domain/layers';
 
@@ -14,15 +17,16 @@ export class NetworkLayerComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   @Input() direction: Direction;
 
-  constructor(private orchestrator: OrchestratorService) {}
+  constructor(private readonly orchestrator: OrchestratorService) {}
 
   ngOnInit() {
-    this.subscription = this.orchestrator
-      .registerLayer({
+    this.subscription = registerDummyRepeater(
+      {
         kind: LayerKind.Network,
         direction: this.direction
-      })
-      .subscribe(this.handleDate);
+      },
+      this.orchestrator
+    );
   }
 
   ngOnDestroy() {
@@ -32,6 +36,4 @@ export class NetworkLayerComponent implements OnInit, OnDestroy {
   getModeName() {
     return translateDirection(this.direction);
   }
-
-  private handleDate(data: LayerData) {}
 }
