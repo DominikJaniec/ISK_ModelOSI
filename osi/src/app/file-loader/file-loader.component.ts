@@ -16,7 +16,7 @@ export class FileLoaderComponent implements OnInit, OnDestroy {
   fileText: string;
   alertText: string;
 
-  constructor(private orchestrator: OrchestratorService) {}
+  constructor(private readonly orchestrator: OrchestratorService) {}
 
   ngOnInit() {}
   ngOnDestroy() {}

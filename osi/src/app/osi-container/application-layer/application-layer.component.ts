@@ -17,7 +17,7 @@ export class ApplicationLayerComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   @Input() direction: Direction;
 
-  constructor(private orchestrator: OrchestratorService) {}
+  constructor(private readonly orchestrator: OrchestratorService) {}
 
   ngOnInit() {
     this.subscription = registerDummyRepeater(

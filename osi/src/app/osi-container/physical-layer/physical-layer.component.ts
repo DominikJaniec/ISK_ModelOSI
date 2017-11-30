@@ -20,7 +20,7 @@ export class PhysicalLayerComponent implements OnInit, OnDestroy {
   readonly layer: PhysicalLayer;
   @Input() direction: Direction;
 
-  constructor(private orchestrator: OrchestratorService) {
+  constructor(private readonly orchestrator: OrchestratorService) {
     this.layer = new PhysicalLayer();
     this.layer.bytesBlockSize = 8;
     this.layer.displayFormat = Format.Hexadecimal;

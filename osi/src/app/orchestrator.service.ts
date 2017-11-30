@@ -93,7 +93,7 @@ export class OrchestratorService {
   }
 
   ready(layerId: LayerId, data: LayerData) {
-    this.logDataFlow(LogEvent.DataPush, layerId, data);
+    this.logDataFlow(LogEvent.DataReady, layerId, data);
     this.readyLayerId = layerId;
     this.readyLayerData = data;
 
@@ -108,17 +108,33 @@ export class OrchestratorService {
 
   private clearDownstreamFrom(layerId: LayerId) {
     this.logDataFlow(LogEvent.ClearDownstream, layerId);
-    this.layersStream.downstreamFrom(layerId).clearFromSubject.next();
+    this.withDownstreamOf(layerId, downstream =>
+      downstream.clearFromSubject.next()
+    );
   }
 
   private pushIntoDownstreamOf(layerId: LayerId, data: LayerData) {
     this.isWaiting = false;
+    this.withDownstreamOf(
+      layerId,
+      downstream => {
+        this.logDataFlow(LogEvent.DataPush, layerId, data);
+        downstream.dataSubject.next(data);
+      },
+      () => this.notifyProgress({ progress: Progress.Finished })
+    );
+  }
+
+  private withDownstreamOf(
+    layerId: LayerId,
+    whenHas: (layer: StreamLayer) => void,
+    whenHasNot: () => void = null
+  ) {
     const downstream = this.layersStream.downstreamFrom(layerId);
     if (downstream !== null) {
-      this.logDataFlow(LogEvent.DataPush, layerId, data);
-      downstream.dataSubject.next(data);
-    } else {
-      this.notifyProgress({ progress: Progress.Finished });
+      whenHas(downstream);
+    } else if (whenHasNot !== null) {
+      whenHasNot();
     }
   }
 

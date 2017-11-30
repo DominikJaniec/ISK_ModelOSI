@@ -41,7 +41,7 @@ export class StreamLayer {
     this.clearFromSubject = new Subject();
 
     if (downstream !== null) {
-      this.clearFromSubject.subscribe(downstream.clearFromSubject.next);
+      this.clearFromSubject.subscribe(_ => downstream.clearFromSubject.next());
     }
   }
 }

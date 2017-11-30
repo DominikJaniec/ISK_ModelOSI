@@ -1,0 +1,21 @@
+<section *ngIf="enabled && !onlyConsole" class="events-log">
+  <hr>
+  <header>Events log</header>
+  <section class="config">
+    <label>
+      <input [(ngModel)]="stringifyData" type="checkbox"> Stringify log's data / content?
+    </label>
+    <button (click)="clear()" class="clear">Clear log</button>
+    <button (click)="hide()" class="hide">Hide (still at `console`)</button>
+  </section>
+  <section class="entries">
+    <ol>
+      <li *ngFor="let entry of entries">
+        <b>{{entry.header}}</b>
+        <pre *ngIf="entry.body">
+          {{entry.body}}
+        </pre>
+      </li>
+    </ol>
+  </section>
+</section>
