@@ -7,9 +7,9 @@ import { Direction } from './domain/directions';
 import { LayerKind, LayerId, DataBlock, LayerData } from './domain/layers';
 import { LayersStream, StreamLayer } from './domain/layers/stream';
 
-export enum NavigatorBehavior {
-  AutoContinue,
-  BreakOnNext
+export enum Navigate {
+  Restart,
+  Next
 }
 
 export enum Progress {
@@ -50,7 +50,6 @@ export class OrchestratorService {
   private readyLayerId: LayerId;
   private readyLayerData: LayerData;
   private isWaiting = false;
-  private behavior = NavigatorBehavior.AutoContinue;
 
   registerLayer(layerId: LayerId): LayerObservables {
     const layer = this.layersStream.for(layerId);
@@ -71,24 +70,27 @@ export class OrchestratorService {
   initializeFlow(data: DataBlock) {
     this.logInitializeFlow(data);
     this.notifyProgress({ progress: Progress.Beginning });
+
+    this.isWaiting = true;
     this.layersStream
       .for(this.layersStream.headId)
       .dataSubject.next({ blocks: [data] });
   }
 
-  navigate(action: NavigatorBehavior) {
+  navigate(action: Navigate) {
     switch (action) {
-      case NavigatorBehavior.BreakOnNext:
-      case NavigatorBehavior.AutoContinue:
-        this.behavior = action;
+      case Navigate.Restart:
+        console.warn('Not implemented.');
+        break;
+
+      case Navigate.Next:
+        if (this.isWaiting) {
+          this.pushIntoDownstreamOf(this.readyLayerId, this.readyLayerData);
+        }
         break;
 
       default:
-        throw new Error(`Unknown kind of behavior: '${this.behavior}'.`);
-    }
-
-    if (this.isWaiting) {
-      this.pushIntoDownstreamOf(this.readyLayerId, this.readyLayerData);
+        throw new Error(`Unknown kind of Navigate: '${action}'.`);
     }
   }
 
@@ -99,11 +101,6 @@ export class OrchestratorService {
 
     this.notifyProgressStep(layerId);
     this.clearDownstreamFrom(layerId);
-
-    this.isWaiting = true;
-    if (this.behavior === NavigatorBehavior.AutoContinue) {
-      this.pushIntoDownstreamOf(layerId, data);
-    }
   }
 
   private clearDownstreamFrom(layerId: LayerId) {
@@ -118,6 +115,7 @@ export class OrchestratorService {
     this.withDownstreamOf(
       layerId,
       downstream => {
+        this.isWaiting = true;
         this.logDataFlow(LogEvent.DataPush, layerId, data);
         downstream.dataSubject.next(data);
       },
@@ -146,7 +144,7 @@ export class OrchestratorService {
   }
 
   private notifyProgress(data: ProgressData) {
-    this.loggerSubject.next({ event: LogEvent.Progress, data: data });
+    this.logProgressStep(data);
     this.progressSubject.next(data);
   }
 
@@ -157,6 +155,16 @@ export class OrchestratorService {
     });
   }
 
+  private logProgressStep(data: ProgressData) {
+    this.loggerSubject.next({
+      event: LogEvent.Progress,
+      data: {
+        source: data.layerId,
+        progress: data.progress
+      }
+    });
+  }
+
   private logDataFlow(
     flow: LogEvent,
     layerId: LayerId,
@@ -164,7 +172,10 @@ export class OrchestratorService {
   ) {
     this.loggerSubject.next({
       event: flow,
-      data: { source: layerId, layerData: layerData }
+      data: {
+        source: layerId,
+        layerData: layerData
+      }
     });
   }
 }

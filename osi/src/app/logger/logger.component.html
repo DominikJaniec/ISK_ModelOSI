@@ -3,19 +3,22 @@
   <header>Events log</header>
   <section class="config">
     <label>
-      <input [(ngModel)]="stringifyData" type="checkbox"> Stringify log's data / content?
+      <input type="checkbox" [(ngModel)]="stringifyData"> Stringify log's data / content?
+    </label>
+    <label>
+      <input type="checkbox" [(ngModel)]="pushAtEnd"> Push log's entries at the end?
     </label>
     <button (click)="clear()" class="clear">Clear log</button>
     <button (click)="hide()" class="hide">Hide (still at `console`)</button>
   </section>
   <section class="entries">
-    <ol>
+    <ul>
       <li *ngFor="let entry of entries">
         <b>{{entry.header}}</b>
         <pre *ngIf="entry.body">
           {{entry.body}}
         </pre>
       </li>
-    </ol>
+    </ul>
   </section>
 </section>

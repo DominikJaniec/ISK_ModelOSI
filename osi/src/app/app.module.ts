@@ -15,6 +15,7 @@ import { NetworkLayerComponent } from './osi-container/network-layer/network-lay
 import { DatalinkLayerComponent } from './osi-container/datalink-layer/datalink-layer.component';
 import { PhysicalLayerComponent } from './osi-container/physical-layer/physical-layer.component';
 import { OrchestratorService } from './orchestrator.service';
+import { NavigatorComponent } from './navigator/navigator.component';
 import { LoggerComponent } from './logger/logger.component';
 
 @NgModule({
@@ -31,6 +32,7 @@ import { LoggerComponent } from './logger/logger.component';
     NetworkLayerComponent,
     DatalinkLayerComponent,
     PhysicalLayerComponent,
+    NavigatorComponent,
     LoggerComponent
   ],
   imports: [

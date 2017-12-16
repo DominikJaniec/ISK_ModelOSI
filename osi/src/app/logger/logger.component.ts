@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Subscription } from 'rxjs/Subscription';
 
 import {
   OrchestratorService,
   LogEntry,
   LogEvent
 } from '../orchestrator.service';
-import { Subscription } from 'rxjs/Subscription';
-import { tick } from '@angular/core/testing';
 
 export interface LogItem {
   readonly header: string;
@@ -23,6 +22,7 @@ export class LoggerComponent implements OnInit, OnDestroy {
   @Input() enabled: boolean;
   @Input() onlyConsole = false;
   @Input() stringifyData = true;
+  @Input() pushAtEnd = false;
   entries: LogItem[] = [];
 
   constructor(private readonly orchestrator: OrchestratorService) {
@@ -50,13 +50,29 @@ export class LoggerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // tslint:disable-next-line:no-console
-    console.info('# Event Log: ' + makeHeader(entry.event), entry.data);
+    const header = makeHeader(entry.event);
 
-    this.entries.push({
-      header: makeHeader(entry.event),
-      body: this.stringifyData ? JSON.stringify(entry.data) : undefined
-    });
+    // tslint:disable-next-line:no-console
+    console.info('# Event Log: ' + header, entry.data);
+
+    this.logIt({ header: header, body: this.getBody(entry) });
+  }
+
+  private logIt(item: LogItem): void {
+    if (this.pushAtEnd) {
+      this.entries.push(item);
+    } else {
+      this.entries.unshift(item);
+    }
+  }
+
+  private getBody(entry: LogEntry): string {
+    if (!this.stringifyData) {
+      return undefined;
+    }
+
+    // TODO : Presents enums in more friendly way.
+    return JSON.stringify(entry.data);
   }
 }
 
