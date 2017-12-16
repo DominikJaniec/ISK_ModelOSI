@@ -1,0 +1,26 @@
+<section class="navigator">
+  <section class="buttons">
+    <button (click)="flowRestart()" [disabled]="!hasProgress()">
+      restart (|@)
+    </button>
+    <button (click)="flowNext()" [disabled]="!canGoForward()">
+      następny (>||)
+    </button>
+    <button (click)="flowFinish()" [disabled]="!canGoForward()">
+      do końca (>>)
+    </button>
+  </section>
+  <section class="progress"></section>
+  <section class="config">
+    <label>
+      kontynuuj automatycznie
+      <input type="checkbox" [(ngModel)]="autoNext" (change)="autoNextChanged()">,
+    </label>
+    <label>
+      czekając
+      <select [disabled]="!autoNext">
+        <option>4 sekundy</option>
+      </select>
+    </label>
+  </section>
+</section>
