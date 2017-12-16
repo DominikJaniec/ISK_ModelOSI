@@ -55,18 +55,24 @@ export class LoggerComponent implements OnInit, OnDestroy {
     // tslint:disable-next-line:no-console
     console.info('# Event Log: ' + header, entry.data);
 
-    this.toLog({
-      header: header,
-      body: this.stringifyData ? JSON.stringify(entry.data) : undefined
-    });
+    this.logIt({ header: header, body: this.getBody(entry) });
   }
 
-  private toLog(item: LogItem): void {
+  private logIt(item: LogItem): void {
     if (this.pushAtEnd) {
       this.entries.push(item);
     } else {
       this.entries.unshift(item);
     }
+  }
+
+  private getBody(entry: LogEntry): string {
+    if (!this.stringifyData) {
+      return undefined;
+    }
+
+    // TODO : Presents enums in more friendly way.
+    return JSON.stringify(entry.data);
   }
 }
 

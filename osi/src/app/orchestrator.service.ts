@@ -144,7 +144,7 @@ export class OrchestratorService {
   }
 
   private notifyProgress(data: ProgressData) {
-    this.loggerSubject.next({ event: LogEvent.Progress, data: data });
+    this.logProgressStep(data);
     this.progressSubject.next(data);
   }
 
@@ -155,6 +155,16 @@ export class OrchestratorService {
     });
   }
 
+  private logProgressStep(data: ProgressData) {
+    this.loggerSubject.next({
+      event: LogEvent.Progress,
+      data: {
+        source: data.layerId,
+        progress: data.progress
+      }
+    });
+  }
+
   private logDataFlow(
     flow: LogEvent,
     layerId: LayerId,
@@ -162,7 +172,10 @@ export class OrchestratorService {
   ) {
     this.loggerSubject.next({
       event: flow,
-      data: { source: layerId, layerData: layerData }
+      data: {
+        source: layerId,
+        layerData: layerData
+      }
     });
   }
 }

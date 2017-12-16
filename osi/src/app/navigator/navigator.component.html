@@ -1,16 +1,19 @@
 <section class="navigator">
   <section class="buttons">
-    <button (click)="flowRestart()" [disabled]="!hasProgress()">
+    <button class="restart" (click)="flowRestart()" [disabled]="!hasProgress()">
       restart (|@)
     </button>
-    <button (click)="flowNext()" [disabled]="!canGoForward()">
+    <button class="next" (click)="flowNext()" [disabled]="!canGoForward()">
       następny (>||)
     </button>
-    <button (click)="flowFinish()" [disabled]="!canGoForward()">
+    <button class="finish" (click)="flowFinish()" [disabled]="!canGoForward()">
       do końca (>>)
     </button>
   </section>
-  <section class="progress"></section>
+  <section class="progress">
+    <div class="progress-bar" role="progressbar" *ngIf="hasProgress()" [class.progress-bar-striped]="canGoForward()" [class.progress-bar-animated]="isRunning()"
+      [style.width.%]="progressPercent" [attr.aria-valuenow]="progressPercent" aria-valuemin="0" aria-valuemax="100"></div>
+  </section>
   <section class="config">
     <label>
       kontynuuj automatycznie
@@ -18,8 +21,10 @@
     </label>
     <label>
       czekając
-      <select [disabled]="!autoNext">
-        <option>4 sekundy</option>
+      <select [(ngModel)]="sleepOption" [disabled]="!autoNext">
+        <option *ngFor="let option of sleepOptions" [ngValue]="option">
+          {{option.name}}
+        </option>
       </select>
     </label>
   </section>
