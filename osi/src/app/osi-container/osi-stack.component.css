@@ -1,9 +1,8 @@
-.collapse__header {
-  background-color: #0094ff;
+header.osi-stack {
+  background-color: #a5e481;
   padding: 5px 15px 5px 15px;
-  cursor: pointer;
 }
 
-.collapse__header:hover {
-  background-color: #51b6ff;
+.osi-stack__content section {
+  padding-top: 0.25em;
 }

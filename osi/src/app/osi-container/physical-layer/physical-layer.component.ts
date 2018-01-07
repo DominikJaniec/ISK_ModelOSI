@@ -5,8 +5,8 @@ import {
   OrchestratorService,
   registerDummyRepeater
 } from '../../orchestrator.service';
-import { Direction, translateDirection } from '../../domain/directions';
-import { LayerKind, LayerData, LayerId } from '../../domain/layers';
+import { TranslateService } from '../../translate.service';
+import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
 import { PhysicalLayer } from '../../domain/layers/physical';
 import { Format } from '../../domain/symbol';
 
@@ -20,7 +20,10 @@ export class PhysicalLayerComponent implements OnInit, OnDestroy {
   readonly layer: PhysicalLayer;
   @Input() direction: Direction;
 
-  constructor(private readonly orchestrator: OrchestratorService) {
+  constructor(
+    private readonly orchestrator: OrchestratorService,
+    private readonly translate: TranslateService
+  ) {
     this.layer = new PhysicalLayer();
     this.layer.bytesBlockSize = 8;
     this.layer.displayFormat = Format.Hexadecimal;
@@ -41,7 +44,7 @@ export class PhysicalLayerComponent implements OnInit, OnDestroy {
   }
 
   getModeName() {
-    return translateDirection(this.direction);
+    return this.translate.direction(this.direction);
   }
 
   fakeChanged(fakedUserInput: string) {

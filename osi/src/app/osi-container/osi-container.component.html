@@ -3,19 +3,11 @@
     <h1>OSI/ISO visualizer Container</h1>
   </div>
   <div class="row">
-    <div class="nav-tabs col-md-12">
-      <div class="nav-tabs__tab col-md-6" [ngClass]="{'nav-active':isReceiverActive()}" (click)="showReceiver()">{{receiverName}}</div>
-      <div class="nav-tabs__tab col-md-6" [ngClass]="{'nav-active':isSenderActive()}" (click)="showSender()">{{senderName}}</div>
+    <div class="col-md-6">
+      <app-osi-stack [direction]="senderDirection"></app-osi-stack>
     </div>
-  </div>
-  <div class="tab-content">
-    <div class="row">
-      <div class="col-md-6">
-        <app-osi-stack [direction]="senderDirection"></app-osi-stack>
-      </div>
-      <div class="col-md-6">
-        <app-osi-stack [direction]="receiverDirection"></app-osi-stack>
-      </div>
+    <div class="col-md-6">
+      <app-osi-stack [direction]="receiverDirection"></app-osi-stack>
     </div>
   </div>
 </div>

@@ -3,8 +3,13 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Direction } from './domain/directions';
-import { LayerKind, LayerId, DataBlock, LayerData } from './domain/layers';
+import {
+  LayerKind,
+  Direction,
+  LayerId,
+  DataBlock,
+  LayerData
+} from './domain/layers';
 import { LayersStream, StreamLayer } from './domain/layers/stream';
 
 export enum Navigate {

@@ -1,5 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Direction, translateDirection } from '../domain/directions';
+import { Direction } from '../domain/layers';
+import { TranslateService } from '../translate.service';
 
 @Component({
   selector: 'app-osi-stack',
@@ -8,11 +9,12 @@ import { Direction, translateDirection } from '../domain/directions';
 })
 export class OsiStackComponent implements OnInit {
   @Input() direction: Direction;
-  directionName: string;
 
-  constructor() {}
+  constructor(private readonly translate: TranslateService) {}
 
-  ngOnInit() {
-    this.directionName = translateDirection(this.direction);
+  ngOnInit() {}
+
+  getFlowDirectionName(): string {
+    return this.translate.direction(this.direction);
   }
 }

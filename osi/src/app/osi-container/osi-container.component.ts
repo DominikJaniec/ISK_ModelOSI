@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Direction, translateDirection } from '../domain/directions';
+import { Direction } from '../domain/layers';
 
 @Component({
   selector: 'app-osi-container',
@@ -9,30 +9,9 @@ import { Direction, translateDirection } from '../domain/directions';
 export class OsiContainerComponent implements OnInit {
   readonly senderDirection = Direction.Sender;
   readonly receiverDirection = Direction.Receiver;
-  readonly senderName = translateDirection(Direction.Sender);
-  readonly receiverName = translateDirection(Direction.Receiver);
 
-  direction: Direction;
+  direction = Direction.Sender;
 
-  constructor() {
-    this.direction = Direction.Sender;
-  }
-
+  constructor() {}
   ngOnInit() {}
-
-  isSenderActive(): boolean {
-    return this.direction === Direction.Sender;
-  }
-
-  isReceiverActive(): boolean {
-    return this.direction === Direction.Receiver;
-  }
-
-  showSender() {
-    this.direction = Direction.Sender;
-  }
-
-  showReceiver() {
-    this.direction = Direction.Receiver;
-  }
 }

@@ -5,8 +5,8 @@ import {
   OrchestratorService,
   registerDummyRepeater
 } from '../../orchestrator.service';
-import { Direction, translateDirection } from '../../domain/directions';
-import { LayerKind, LayerData, LayerId } from '../../domain/layers';
+import { TranslateService } from '../../translate.service';
+import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
 
 @Component({
   selector: 'app-network-layer',
@@ -17,7 +17,10 @@ export class NetworkLayerComponent implements OnInit, OnDestroy {
   private subscription: Subscription;
   @Input() direction: Direction;
 
-  constructor(private readonly orchestrator: OrchestratorService) {}
+  constructor(
+    private readonly orchestrator: OrchestratorService,
+    private readonly translate: TranslateService
+  ) {}
 
   ngOnInit() {
     this.subscription = registerDummyRepeater(
@@ -34,6 +37,6 @@ export class NetworkLayerComponent implements OnInit, OnDestroy {
   }
 
   getModeName() {
-    return translateDirection(this.direction);
+    return this.translate.direction(this.direction);
   }
 }
