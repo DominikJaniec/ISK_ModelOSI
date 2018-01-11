@@ -1,7 +1,6 @@
 import { Subject } from 'rxjs/Subject';
 
-import { Direction } from '../directions';
-import { LayerKind, LayerId, LayerData, orderFor } from '../layers';
+import { LayerKind, Direction, LayerId, LayerData, orderFor } from '../layers';
 
 export class LayersStream {
   private readonly map: LayersMap;

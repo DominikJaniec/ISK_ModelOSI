@@ -5,28 +5,33 @@ import {
   OrchestratorService,
   registerDummyRepeater
 } from '../../orchestrator.service';
-import { Direction, translateDirection } from '../../domain/directions';
-import { LayerKind, LayerData, LayerId } from '../../domain/layers';
+import { TranslateService } from '../../translate.service';
+import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
+import { LayerContent } from '../layer-content';
 
 @Component({
   selector: 'app-session-layer',
   templateUrl: './session-layer.component.html',
   styleUrls: ['./session-layer.component.css']
 })
-export class SessionLayerComponent implements OnInit, OnDestroy {
+export class SessionLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
-  @Input() direction: Direction;
+  private direction: Direction;
 
-  constructor(private readonly orchestrator: OrchestratorService) {}
+  constructor(
+    private readonly orchestrator: OrchestratorService,
+    private readonly translate: TranslateService
+  ) {}
 
-  ngOnInit() {
+  initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
       {
         kind: LayerKind.Session,
-        direction: this.direction
+        direction: direction
       },
       this.orchestrator
     );
+    this.direction = direction;
   }
 
   ngOnDestroy() {
@@ -34,6 +39,6 @@ export class SessionLayerComponent implements OnInit, OnDestroy {
   }
 
   getModeName() {
-    return translateDirection(this.direction);
+    return this.translate.direction(this.direction);
   }
 }

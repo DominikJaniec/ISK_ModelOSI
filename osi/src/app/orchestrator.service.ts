@@ -3,8 +3,13 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 import { Subscription } from 'rxjs/Subscription';
 
-import { Direction } from './domain/directions';
-import { LayerKind, LayerId, DataBlock, LayerData } from './domain/layers';
+import {
+  LayerKind,
+  Direction,
+  LayerId,
+  DataBlock,
+  LayerData
+} from './domain/layers';
 import { LayersStream, StreamLayer } from './domain/layers/stream';
 
 export enum Navigate {
@@ -47,9 +52,10 @@ export class OrchestratorService {
   private readonly loggerSubject = new Subject<LogEntry>();
   private readonly layersStream = new LayersStream();
 
+  private initData: DataBlock = null;
+  private isWaiting = false;
   private readyLayerId: LayerId;
   private readyLayerData: LayerData;
-  private isWaiting = false;
 
   registerLayer(layerId: LayerId): LayerObservables {
     const layer = this.layersStream.for(layerId);
@@ -68,6 +74,7 @@ export class OrchestratorService {
   }
 
   initializeFlow(data: DataBlock) {
+    this.initData = data;
     this.logInitializeFlow(data);
     this.notifyProgress({ progress: Progress.Beginning });
 
@@ -80,7 +87,9 @@ export class OrchestratorService {
   navigate(action: Navigate) {
     switch (action) {
       case Navigate.Restart:
-        console.warn('Not implemented.');
+        if (this.initData !== null) {
+          this.initializeFlow(this.initData);
+        }
         break;
 
       case Navigate.Next:

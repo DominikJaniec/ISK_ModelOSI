@@ -1,18 +1,26 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Direction, translateDirection } from '../domain/directions';
+import { Direction, LayerKind } from '../domain/layers';
+import { TranslateService } from '../translate.service';
 
 @Component({
   selector: 'app-osi-stack',
   templateUrl: './osi-stack.component.html',
   styleUrls: ['./osi-stack.component.css']
 })
-export class OsiStackComponent implements OnInit {
+export class OsiStackComponent {
   @Input() direction: Direction;
-  directionName: string;
 
-  constructor() {}
+  applicationLayerKind = LayerKind.Application;
+  presentationLayerKind = LayerKind.Presentation;
+  sessionLayerKind = LayerKind.Session;
+  transportLayerKind = LayerKind.Transport;
+  networkLayerKind = LayerKind.Network;
+  dataLinkLayerKind = LayerKind.DataLink;
+  PhysicalLayerKind = LayerKind.Physical;
 
-  ngOnInit() {
-    this.directionName = translateDirection(this.direction);
+  constructor(private readonly translate: TranslateService) {}
+
+  getFlowDirectionName(): string {
+    return this.translate.direction(this.direction);
   }
 }

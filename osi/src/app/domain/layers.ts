@@ -1,5 +1,3 @@
-import { Direction } from './directions';
-
 export enum LayerKind {
   Application,
   Presentation,
@@ -8,6 +6,11 @@ export enum LayerKind {
   Network,
   DataLink,
   Physical
+}
+
+export enum Direction {
+  Sender,
+  Receiver
 }
 
 export interface LayerId {
