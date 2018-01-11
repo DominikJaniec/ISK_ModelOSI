@@ -52,9 +52,10 @@ export class OrchestratorService {
   private readonly loggerSubject = new Subject<LogEntry>();
   private readonly layersStream = new LayersStream();
 
+  private initData: DataBlock = null;
+  private isWaiting = false;
   private readyLayerId: LayerId;
   private readyLayerData: LayerData;
-  private isWaiting = false;
 
   registerLayer(layerId: LayerId): LayerObservables {
     const layer = this.layersStream.for(layerId);
@@ -73,6 +74,7 @@ export class OrchestratorService {
   }
 
   initializeFlow(data: DataBlock) {
+    this.initData = data;
     this.logInitializeFlow(data);
     this.notifyProgress({ progress: Progress.Beginning });
 
@@ -85,7 +87,9 @@ export class OrchestratorService {
   navigate(action: Navigate) {
     switch (action) {
       case Navigate.Restart:
-        console.warn('Not implemented.');
+        if (this.initData !== null) {
+          this.initializeFlow(this.initData);
+        }
         break;
 
       case Navigate.Next:
