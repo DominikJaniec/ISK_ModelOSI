@@ -7,13 +7,14 @@ import {
 } from '../../orchestrator.service';
 import { TranslateService } from '../../translate.service';
 import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
+import { LayerContent } from '../layer-content';
 
 @Component({
   selector: 'app-datalink-layer',
   templateUrl: './datalink-layer.component.html',
   styleUrls: ['./datalink-layer.component.css']
 })
-export class DatalinkLayerComponent implements OnInit, OnDestroy {
+export class DatalinkLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
   @Input() direction: Direction;
 
@@ -22,14 +23,15 @@ export class DatalinkLayerComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService
   ) {}
 
-  ngOnInit() {
+  initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
       {
         kind: LayerKind.DataLink,
-        direction: this.direction
+        direction: direction
       },
       this.orchestrator
     );
+    this.direction = direction;
   }
 
   ngOnDestroy() {

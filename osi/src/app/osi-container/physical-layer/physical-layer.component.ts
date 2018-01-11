@@ -9,16 +9,17 @@ import { TranslateService } from '../../translate.service';
 import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
 import { PhysicalLayer } from '../../domain/layers/physical';
 import { Format } from '../../domain/symbol';
+import { LayerContent } from '../layer-content';
 
 @Component({
   selector: 'app-physical-layer',
   templateUrl: './physical-layer.component.html',
   styleUrls: ['./physical-layer.component.css']
 })
-export class PhysicalLayerComponent implements OnInit, OnDestroy {
+export class PhysicalLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
+  private direction: Direction;
   readonly layer: PhysicalLayer;
-  @Input() direction: Direction;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
@@ -29,14 +30,15 @@ export class PhysicalLayerComponent implements OnInit, OnDestroy {
     this.layer.displayFormat = Format.Hexadecimal;
   }
 
-  ngOnInit() {
+  initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
       {
         kind: LayerKind.Physical,
-        direction: this.direction
+        direction: direction
       },
       this.orchestrator
     );
+    this.direction = direction;
   }
 
   ngOnDestroy() {

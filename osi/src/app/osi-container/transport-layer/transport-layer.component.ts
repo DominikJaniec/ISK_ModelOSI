@@ -7,13 +7,14 @@ import {
 } from '../../orchestrator.service';
 import { TranslateService } from '../../translate.service';
 import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
+import { LayerContent } from '../layer-content';
 
 @Component({
   selector: 'app-transport-layer',
   templateUrl: './transport-layer.component.html',
   styleUrls: ['./transport-layer.component.css']
 })
-export class TransportLayerComponent implements OnInit, OnDestroy {
+export class TransportLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
   @Input() direction: Direction;
 
@@ -22,14 +23,15 @@ export class TransportLayerComponent implements OnInit, OnDestroy {
     private readonly translate: TranslateService
   ) {}
 
-  ngOnInit() {
+  initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
       {
         kind: LayerKind.Transport,
-        direction: this.direction
+        direction: direction
       },
       this.orchestrator
     );
+    this.direction = direction;
   }
 
   ngOnDestroy() {

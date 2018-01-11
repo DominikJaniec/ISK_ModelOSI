@@ -7,29 +7,31 @@ import {
 } from '../../orchestrator.service';
 import { TranslateService } from '../../translate.service';
 import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
+import { LayerContent } from '../layer-content';
 
 @Component({
   selector: 'app-network-layer',
   templateUrl: './network-layer.component.html',
   styleUrls: ['./network-layer.component.css']
 })
-export class NetworkLayerComponent implements OnInit, OnDestroy {
+export class NetworkLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
-  @Input() direction: Direction;
+  private direction: Direction;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
     private readonly translate: TranslateService
   ) {}
 
-  ngOnInit() {
+  initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
       {
         kind: LayerKind.Network,
-        direction: this.direction
+        direction: direction
       },
       this.orchestrator
     );
+    this.direction = direction;
   }
 
   ngOnDestroy() {

@@ -4,39 +4,12 @@
 
 <div class="osi-stack__content">
   <section>
-    <div class="collapse__header" data-toggle="collapse" data-target="#application-layer">Warstwa Aplikacji</div>
-    <div id="application-layer" class="collapse">
-      <app-application-layer [direction]="direction"></app-application-layer>
-    </div>
-
-    <div class="collapse__header" data-toggle="collapse" data-target="#presentation-layer">Warstwa Prezentacji</div>
-    <div id="presentation-layer" class="collapse">
-      <app-presentation-layer [direction]="direction"></app-presentation-layer>
-    </div>
-
-    <div class="collapse__header" data-toggle="collapse" data-target="#session-layer">Warstwa Sesji</div>
-    <div id="session-layer" class="collapse">
-      <app-session-layer [direction]="direction"></app-session-layer>
-    </div>
-
-    <div class="collapse__header" data-toggle="collapse" data-target="#transport-layer">Warstwa Transportowa</div>
-    <div id="transport-layer" class="collapse">
-      <app-transport-layer [direction]="direction"></app-transport-layer>
-    </div>
-
-    <div class="collapse__header" data-toggle="collapse" data-target="#network-layer">Warstwa Sieci</div>
-    <div id="network-layer" class="collapse">
-      <app-network-layer [direction]="direction"></app-network-layer>
-    </div>
-
-    <div class="collapse__header" data-toggle="collapse" data-target="#datalink-layer">Warstwa Łącza Danych</div>
-    <div id="datalink-layer" class="collapse">
-      <app-datalink-layer [direction]="direction"></app-datalink-layer>
-    </div>
-
-    <div class="collapse__header" data-toggle="collapse" data-target="#physical-layer">Warstwa Fizyczna</div>
-    <div id="physical-layer" class="collapse">
-      <app-physical-layer [direction]="direction"></app-physical-layer>
-    </div>
+    <app-layer [direction]="direction" [layerKind]="applicationLayerKind"></app-layer>
+    <app-layer [direction]="direction" [layerKind]="presentationLayerKind"></app-layer>
+    <app-layer [direction]="direction" [layerKind]="sessionLayerKind"></app-layer>
+    <app-layer [direction]="direction" [layerKind]="transportLayerKind"></app-layer>
+    <app-layer [direction]="direction" [layerKind]="networkLayerKind"></app-layer>
+    <app-layer [direction]="direction" [layerKind]="dataLinkLayerKind"></app-layer>
+    <app-layer [direction]="direction" [layerKind]="PhysicalLayerKind"></app-layer>
   </section>
 </div>

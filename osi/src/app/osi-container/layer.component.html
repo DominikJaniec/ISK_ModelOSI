@@ -1,0 +1,9 @@
+<header class="layer" data-toggle="collapse" [attr.data-target]="'#' + id">
+  {{getLayerName()}}
+</header>
+
+<div class="layer__content collapse" [attr.id]="id" [class.show]="isExpanded">
+  <section>
+    <ng-template #layerContainer></ng-template>
+  </section>
+</div>

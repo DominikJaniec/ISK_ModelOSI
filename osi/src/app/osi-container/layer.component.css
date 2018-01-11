@@ -1,0 +1,15 @@
+header.layer {
+  color: white;
+  background-color: #005fa3;
+  padding: 5px 15px 5px 15px;
+  cursor: pointer;
+}
+
+header.layer:hover {
+  color: black;
+  background-color: #8ed0ff;
+}
+
+.layer__content section {
+  min-height: 150px;
+}
