@@ -1,5 +1,6 @@
 .navigator {
   margin: 1em 0;
+  min-width: 60em;
 }
 
 .navigator .actions {
@@ -10,5 +11,5 @@
 }
 
 .navigator .progress {
-  margin: 0.2em 0 0;
+  margin: 0 0 0.5em;
 }

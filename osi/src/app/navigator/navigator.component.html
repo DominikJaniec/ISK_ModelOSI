@@ -1,4 +1,8 @@
 <section class="navigator">
+  <section class="progress">
+    <div class="progress-bar" role="progressbar" *ngIf="hasProgress()" [class.progress-bar-striped]="canGoForward()" [class.progress-bar-animated]="isRunning()"
+      [style.width.%]="progressPercent" [attr.aria-valuenow]="progressPercent" aria-valuemin="0" aria-valuemax="100"></div>
+  </section>
   <section class="actions">
     <section class="buttons">
       <button class="next" (click)="flowNext()" [disabled]="!canGoForward()">
@@ -32,9 +36,5 @@
         </select>
       </label>
     </section>
-  </section>
-  <section class="progress">
-    <div class="progress-bar" role="progressbar" *ngIf="hasProgress()" [class.progress-bar-striped]="canGoForward()" [class.progress-bar-animated]="isRunning()"
-      [style.width.%]="progressPercent" [attr.aria-valuenow]="progressPercent" aria-valuemin="0" aria-valuemax="100"></div>
   </section>
 </section>
