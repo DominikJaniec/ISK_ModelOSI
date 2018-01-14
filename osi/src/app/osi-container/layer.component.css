@@ -1,8 +1,10 @@
 header.layer {
+  cursor: pointer;
   color: white;
   background-color: #005fa3;
-  padding: 5px 15px 5px 15px;
-  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 header.layer:hover {
@@ -10,6 +12,15 @@ header.layer:hover {
   background-color: #8ed0ff;
 }
 
-.layer__content section {
+header.layer.reversed {
+  flex-direction: row-reverse;
+}
+
+header.layer .name,
+header.layer .indicator {
+  padding: 5px 15px;
+}
+
+.layer-content section {
   min-height: 150px;
 }
