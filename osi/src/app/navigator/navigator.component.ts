@@ -21,7 +21,9 @@ const availableSleepOptions: SleepOption[] = [
   { name: '15 sekund', ms: 15 * 1000 },
   { name: 'pół minuty', ms: 30 * 1000 },
   { name: 'całą minutę', ms: 60 * 1000 },
-  { name: '3 minuty', ms: 3 * 60 * 1000 }
+  { name: '3 minuty', ms: 3 * 60 * 1000 },
+  { name: '7 minut', ms: 7 * 60 * 1000 },
+  { name: '16 minut', ms: 16 * 60 * 1000 }
 ];
 
 @Component({
@@ -29,7 +31,7 @@ const availableSleepOptions: SleepOption[] = [
   templateUrl: './navigator.component.html',
   styleUrls: ['./navigator.component.css']
 })
-export class NavigatorComponent implements OnInit, OnDestroy {
+export class NavigatorComponent implements OnDestroy {
   private readonly subscription: Subscription;
   private timer: number | null;
   private fastForward = false;
@@ -46,7 +48,6 @@ export class NavigatorComponent implements OnInit, OnDestroy {
       .subscribe(progress => this.handle(progress));
   }
 
-  ngOnInit() {}
   ngOnDestroy() {
     this.subscription.unsubscribe();
   }
@@ -74,14 +75,19 @@ export class NavigatorComponent implements OnInit, OnDestroy {
     this.orchestrator.navigate(Navigate.Restart);
   }
 
-  flowFinish() {
-    this.fastForward = true;
-    this.flowNext();
+  flowStop() {
+    this.autoNext = false;
+    this.autoNextChanged();
   }
 
   flowNext() {
     this.clearTimer();
     this.orchestrator.navigate(Navigate.Next);
+  }
+
+  flowFinish() {
+    this.fastForward = true;
+    this.flowNext();
   }
 
   private isCurrent(progress: Progress): boolean {
@@ -91,6 +97,7 @@ export class NavigatorComponent implements OnInit, OnDestroy {
   private handle(progress: ProgressData) {
     this.setCurrentProgress(progress);
     if (this.isCurrent(Progress.Finished)) {
+      this.clearTimer();
       return;
     }
 

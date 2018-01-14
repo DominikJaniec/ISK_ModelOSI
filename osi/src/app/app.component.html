@@ -6,6 +6,8 @@
     </div>
 
     <div class="col-md-8">
+      <h1>OSI/ISO visualizer Container</h1>
+      <app-navigator></app-navigator>
       <app-osi-container></app-osi-container>
     </div>
 
@@ -13,8 +15,6 @@
       <app-endpoint [endpoint]="receiver" [displayName]="'Odbiorca'"></app-endpoint>
     </div>
   </div>
-  <div class="row">
-    <app-navigator></app-navigator>
-  </div>
-  <app-logger [enabled]="true"></app-logger>
+
+  <app-logger class="row" [enabled]="true"></app-logger>
 </div>
