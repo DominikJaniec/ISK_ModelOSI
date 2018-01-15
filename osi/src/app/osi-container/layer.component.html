@@ -1,8 +1,14 @@
-<header class="layer" data-toggle="collapse" [attr.data-target]="'#' + id">
-  {{getLayerName()}}
+<header class="layer" [class.reversed]="isReceiver()" data-toggle="collapse" [attr.data-target]="'#' + id">
+  <div class="name">{{getLayerName()}}</div>
+  <div class="indicator txt-icon">
+    (
+    <span *ngIf="!isCurrent">&nbsp;</span>
+    <span *ngIf="isCurrent">x</span>
+    )
+  </div>
 </header>
 
-<div class="layer__content collapse" [attr.id]="id" [class.show]="isExpanded">
+<div class="layer-content collapse" [attr.id]="id" [class.show]="isExpanded">
   <section>
     <ng-template #layerContainer></ng-template>
   </section>

@@ -28,7 +28,8 @@ import { LayerContent, layerContentTypeFactory } from './layer-content';
   styleUrls: ['./layer.component.css']
 })
 export class LayerComponent implements OnInit, OnDestroy {
-  readonly id = uuid();
+  readonly id = `layer-${uuid()}`;
+  isCurrent = false;
   isExpanded = false;
 
   @Input() layerKind: LayerKind;
@@ -54,6 +55,14 @@ export class LayerComponent implements OnInit, OnDestroy {
     const factory = this.resolver.resolveComponentFactory(componentType);
     this.layerContentComponent = this.layerContainer.createComponent(factory);
     this.layerContentComponent.instance.initialize(this.direction);
+
+    if (
+      this.layerKind === LayerKind.Application &&
+      this.direction === Direction.Sender
+    ) {
+      this.isCurrent = true;
+      this.isExpanded = true;
+    }
   }
 
   ngOnDestroy() {
@@ -64,8 +73,8 @@ export class LayerComponent implements OnInit, OnDestroy {
     return this.translate.layer(this.layerKind);
   }
 
-  getFlowName(): string {
-    return this.translate.direction(this.direction);
+  isReceiver(): boolean {
+    return this.direction === Direction.Receiver;
   }
 
   private handleProgress(progress: ProgressData) {
@@ -73,8 +82,21 @@ export class LayerComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.isExpanded =
+    this.isCurrent =
       this.layerKind === progress.layerId.kind &&
       this.direction === progress.layerId.direction;
+
+    if (this.isCurrent) {
+      this.isExpanded = true;
+      this.scrollToSelf();
+    }
+  }
+
+  private scrollToSelf() {
+    document.getElementById(this.id).parentElement.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+      inline: 'nearest'
+    });
   }
 }

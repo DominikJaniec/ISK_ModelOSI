@@ -1,8 +1,8 @@
-<header class="osi-stack">
+<header class="osi-stack" [class.reversed]="isReceiver()">
   {{getFlowDirectionName()}}
 </header>
 
-<div class="osi-stack__content">
+<div class="osi-stack-content">
   <section>
     <app-layer [direction]="direction" [layerKind]="applicationLayerKind"></app-layer>
     <app-layer [direction]="direction" [layerKind]="presentationLayerKind"></app-layer>

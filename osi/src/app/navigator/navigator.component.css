@@ -1,0 +1,15 @@
+.navigator {
+  margin: 1em 0;
+  min-width: 60em;
+}
+
+.navigator .actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 0;
+}
+
+.navigator .progress {
+  margin: 0 0 0.5em;
+}

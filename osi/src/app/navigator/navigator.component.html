@@ -1,31 +1,40 @@
 <section class="navigator">
-  <section class="buttons">
-    <button class="restart" (click)="flowRestart()" [disabled]="!hasProgress()">
-      restart (|@)
-    </button>
-    <button class="next" (click)="flowNext()" [disabled]="!canGoForward()">
-      następny (>||)
-    </button>
-    <button class="finish" (click)="flowFinish()" [disabled]="!canGoForward()">
-      do końca (>>)
-    </button>
-  </section>
   <section class="progress">
     <div class="progress-bar" role="progressbar" *ngIf="hasProgress()" [class.progress-bar-striped]="canGoForward()" [class.progress-bar-animated]="isRunning()"
       [style.width.%]="progressPercent" [attr.aria-valuenow]="progressPercent" aria-valuemin="0" aria-valuemax="100"></div>
   </section>
-  <section class="config">
-    <label>
-      kontynuuj automatycznie
-      <input type="checkbox" [(ngModel)]="autoNext" (change)="autoNextChanged()">,
-    </label>
-    <label>
-      czekając
-      <select [(ngModel)]="sleepOption" [disabled]="!autoNext">
-        <option *ngFor="let option of sleepOptions" [ngValue]="option">
-          {{option.name}}
-        </option>
-      </select>
-    </label>
+  <section class="actions">
+    <section class="buttons">
+      <button class="next" (click)="flowNext()" [disabled]="!canGoForward()">
+        następny
+        <span class="txt-icon">(>|)</span>
+      </button>
+      <button class="stop" (click)="flowStop()" [disabled]="!isRunning()">
+        stop
+        <span class="txt-icon">(||)</span>
+      </button>
+      <button class="finish" (click)="flowFinish()" [disabled]="!canGoForward()">
+        do końca
+        <span class="txt-icon">(>>)</span>
+      </button>
+      <button class="restart" (click)="flowRestart()" [disabled]="!hasProgress()">
+        restart
+        <span class="txt-icon">(|@)</span>
+      </button>
+    </section>
+    <section class="config">
+      <label>
+        kontynuuj automatycznie
+        <input type="checkbox" [(ngModel)]="autoNext" (change)="autoNextChanged()">,
+      </label>
+      <label>
+        &nbsp; czekając
+        <select [(ngModel)]="sleepOption" [disabled]="!autoNext">
+          <option *ngFor="let option of sleepOptions" [ngValue]="option">
+            {{option.name}}
+          </option>
+        </select>
+      </label>
+    </section>
   </section>
 </section>
