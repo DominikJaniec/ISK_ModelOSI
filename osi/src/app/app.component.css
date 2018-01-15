@@ -1,12 +1,6 @@
-html {
-  position: relative;
-  min-height: 100%;
-}
-
-body {
+section.app {
   /* bottom = footer height */
   margin: 0 0 5.2em;
-  padding: 25px;
 }
 
 footer {
