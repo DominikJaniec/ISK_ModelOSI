@@ -6,7 +6,7 @@ import {
   registerDummyRepeater
 } from '../../orchestrator.service';
 import { TranslateService } from '../../translate.service';
-import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
+import { LayerKind, Direction, LayerData, LayerId, DataBlock } from '../../domain/layers';
 import { LayerContent } from '../layer-content';
 
 @Component({

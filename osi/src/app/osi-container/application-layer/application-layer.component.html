@@ -1,3 +1,17 @@
 <div class="application-layer__container">
-  application-layer works in {{getModeName()}} Mode!
+  <header class="dscr-header" data-toggle="collapse" data-target="#dscr">
+    Czym jest Warstwa Aplikacji? <i class="far fa-question-circle"></i>
+  </header>
+  <div class="layer-description collapse" id="dscr" [class.show]="isExpanded">
+    <p>
+      Warstwa aplikacji umożliwia aplikacjom korzystanie z usług innych warstw i określa protokoły używane przez aplikację do wymiany danych. Jest wiele protokołów warstwy aplikacji i ciągle tworzone są nowe. Najbardziej znanymi protokołami warstwy aplikacji są te, których używa się do wymiany informacji użytkownika:
+    </p>
+      <ul>
+        <li>Hypertext Transfer Protocol (HTTP) jest używany do przesyłania plików stron internetowych światowej sieci Web.</li>
+        <li>File Transfer Protocol (FTP) jest używany do interakcyjnego przesyłania plików.</li>
+        <li>Simple Mail Transfer Protocol (SMTP) jest używany do przesyłania poczty i załączników.</li>
+        <li>Telnet, protokół emulacji terminala jest używany do logowania się zdalnie do hostów.</li>
+      </ul>
+  </div>
+  <app-file-loader (dataUpdated)="fileChanged($event)"></app-file-loader>
 </div>

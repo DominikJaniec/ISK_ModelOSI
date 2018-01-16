@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 
 import { OrchestratorService } from '../orchestrator.service';
 import { DataBlock } from '../domain/layers';
@@ -15,11 +15,14 @@ export class FileLoaderComponent implements OnInit, OnDestroy {
   file: File;
   fileText: string;
   alertText: string;
+  binary: Blob;
+  //
 
   constructor(private readonly orchestrator: OrchestratorService) {}
 
   ngOnInit() {}
   ngOnDestroy() {}
+  @Output() dataUpdated: EventEmitter<string> = new EventEmitter<string>();
 
   fileChange(event) {
     const fileList: FileList = event.target.files;
@@ -44,15 +47,17 @@ export class FileLoaderComponent implements OnInit, OnDestroy {
       const fileContent = this.reader.result;
       this.fileText = fileContent;
       log('onloaded', fileContent);
-
+      
       this.orchestrator.initializeFlow(contentToData(this.reader));
+      this.dataUpdated.emit(this.fileText);
     };
   }
 }
 
 function contentToData(reader: FileReader): DataBlock {
   // TODO: Load data as bytes, use encoding?
-  return { bytes: [] };
+  //this.data = ;
+  return { bytes: [reader.result] };
 }
 
 function log(header: string, content: any) {
