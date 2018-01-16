@@ -1,19 +1,21 @@
-<div class="container">
-  <div class="row">
-    <div class="col-md-2">
-      <app-endpoint [endpoint]="sender" [displayName]="'Nadawca'"></app-endpoint>
+<section class="app">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-2">
+        <app-endpoint [endpoint]="sender" [displayName]="'Nadawca'"></app-endpoint>
+        <app-file-loader></app-file-loader>
+      </div>
+      <div class="col-md-8">
+        <h1>OSI/ISO visualizer Container</h1>
+        <app-osi-container></app-osi-container>
+      </div>
+      <div class="col-md-2">
+        <app-endpoint [endpoint]="receiver" [displayName]="'Odbiorca'"></app-endpoint>
+      </div>
     </div>
-
-    <div class="col-md-8">
-      <app-osi-container></app-osi-container>
-    </div>
-
-    <div class="col-md-2">
-      <app-endpoint [endpoint]="receiver" [displayName]="'Odbiorca'"></app-endpoint>
-    </div>
+    <app-logger class="row" [enabled]="true"></app-logger>
   </div>
-  <div class="row">
-    <app-navigator></app-navigator>
-  </div>
-  <app-logger [enabled]="true"></app-logger>
-</div>
+</section>
+<footer>
+  <app-navigator></app-navigator>
+</footer>

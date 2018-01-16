@@ -23,4 +23,8 @@ export class OsiStackComponent {
   getFlowDirectionName(): string {
     return this.translate.direction(this.direction);
   }
+
+  isReceiver(): boolean {
+    return this.direction === Direction.Receiver;
+  }
 }
