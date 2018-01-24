@@ -119,6 +119,11 @@ export class OrchestratorService {
     );
   }
 
+  getLayerData()
+  {
+    return this.readyLayerData.blocks;
+  }
+
   private pushIntoDownstreamOf(layerId: LayerId, data: LayerData) {
     this.isWaiting = false;
     this.withDownstreamOf(

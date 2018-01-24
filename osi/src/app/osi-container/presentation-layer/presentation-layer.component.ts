@@ -22,7 +22,8 @@ export class PresentationLayerComponent implements OnDestroy, LayerContent {
   constructor(
     private readonly orchestrator: OrchestratorService,
     private readonly translate: TranslateService
-  ) {}
+  ) {
+  }
 
   initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
@@ -33,6 +34,10 @@ export class PresentationLayerComponent implements OnDestroy, LayerContent {
       this.orchestrator
     );
     this.direction = direction;
+    //this.data = this.orchestrator.getLayerData()[0];
+    console.log("pres lev");
+    console.log(this.direction);
+    
   }
 
   ngOnDestroy() {
