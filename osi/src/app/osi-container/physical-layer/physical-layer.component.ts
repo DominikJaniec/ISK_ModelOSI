@@ -20,7 +20,7 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
   private direction: Direction;
   readonly layer: PhysicalLayer;
-
+  
   constructor(
     private readonly orchestrator: OrchestratorService,
     private readonly translate: TranslateService
@@ -28,6 +28,7 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
     this.layer = new PhysicalLayer();
     this.layer.bytesBlockSize = 8;
     this.layer.displayFormat = Format.Hexadecimal;
+    
   }
 
   initialize(direction: Direction) {

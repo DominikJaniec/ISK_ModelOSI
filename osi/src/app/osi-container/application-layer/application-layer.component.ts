@@ -17,6 +17,8 @@ import { LayerContent } from '../layer-content';
 export class ApplicationLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
   private direction: Direction;
+  isExpanded = false;
+  fileText: string;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
@@ -40,5 +42,12 @@ export class ApplicationLayerComponent implements OnDestroy, LayerContent {
 
   getModeName() {
     return this.translate.direction(this.direction);
+  }
+  
+  fileChanged(data)
+  {
+    this.fileText = data;
+    console.log("received: " + this.fileText);
+    console.log(data);
   }
 }

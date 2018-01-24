@@ -1,10 +1,14 @@
 <section class="endpoint">
   <header>{{displayName}}</header>
   <section class="addr-ip-port">
-    <span>IP:</span>
-    <input class="ip" placeholder="Adres IP" [(ngModel)]="endpoint.ip">
-    <span>Port:</span>
-    <input class="port" placeholder="Port" [(ngModel)]="endpoint.port">
+    <div>
+      <span>IP:</span>
+      <input class="ip" placeholder="Adres IP" [(ngModel)]="endpoint.ip">
+    </div>
+    <div>
+      <span>Port:</span>
+      <input class="port" placeholder="Port" [(ngModel)]="endpoint.port">
+    </div>
   </section>
   <section class="addr-mac">
     <span>MAC:</span>
