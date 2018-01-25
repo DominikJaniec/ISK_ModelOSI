@@ -17,7 +17,8 @@ import { LayerContent } from '../layer-content';
 export class SessionLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
   private direction: Direction;
-  data: DataBlock;
+  data: LayerData;
+  dat: string;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
@@ -33,6 +34,17 @@ export class SessionLayerComponent implements OnDestroy, LayerContent {
       this.orchestrator
     );
     this.direction = direction;
+
+    this.orchestrator.registerLayer({
+      kind: LayerKind.Session,
+      direction: direction
+    }).layerData.subscribe(data => {
+      this.data = data;
+      this.dat = data.blocks[0].bytes[0];
+      console.log("HERE");
+      console.log(data);
+      });
+
   }
 
   ngOnDestroy() {

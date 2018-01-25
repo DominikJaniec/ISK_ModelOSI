@@ -19,7 +19,7 @@ export interface LayerId {
 }
 
 export interface DataBlock {
-  readonly bytes: number[];
+  readonly bytes: any;
 }
 
 export interface LayerData {

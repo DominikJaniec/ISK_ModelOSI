@@ -200,5 +200,5 @@ export function registerDummyRepeater(
 ): Subscription {
   return orchestrator
     .registerLayer(layerId)
-    .layerData.subscribe(data => orchestrator.ready(layerId, data));
+    .layerData.subscribe(data => { orchestrator.ready(layerId, data); console.log("AM HERE! - " + layerId); });
 }
