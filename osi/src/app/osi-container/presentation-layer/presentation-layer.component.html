@@ -1,4 +1,15 @@
 <div class="presentation-layer__container">
-  presentation-layer works in {{getModeName()}} Mode!
+  <header class="dscr-header" data-toggle="collapse" data-target="#dscr-app">
+    Czym jest Warstwa Prezentacji? <i class="far fa-question-circle"></i>
+  </header>
+  <div class="layer-description collapse" id="dscr-app" [class.show]="isExpanded">
+    <p>
+      Zapewnia tłumaczenie danych, definiowanie ich formatu oraz odpowiednią składnię. Umożliwia przekształcenie danych na postać standardową, niezależną od aplikacji. Rozwiązuje takie problemy jak niezgodność reprezentacji liczb, znaków końca wiersza, liter narodowych itp. Odpowiada także za kompresję i szyfrowanie. 
+    </p>
+  </div>
+  <div class="row">
+    Dane zuploadowane przez Ciebie wyglądają na razie następująco:
+    <div class="data">{{dat}}</div>
+  </div>
 
 </div>

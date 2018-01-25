@@ -17,7 +17,9 @@ import { LayerContent } from '../layer-content';
 export class PresentationLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
   private direction: Direction;
-  data: DataBlock;
+  data: LayerData;
+  dat : string;
+
 
   constructor(
     private readonly orchestrator: OrchestratorService,
@@ -34,11 +36,33 @@ export class PresentationLayerComponent implements OnDestroy, LayerContent {
       this.orchestrator
     );
     this.direction = direction;
-    //this.data = this.orchestrator.getLayerData()[0];
-    console.log("pres lev");
-    console.log(this.direction);
+
+    this.orchestrator.registerLayer({
+      kind: LayerKind.Presentation,
+      direction: direction
+    }).layerData.subscribe(data =>
+      {
+      this.data = data;
+      this.dat = data.blocks[0].bytes[0];
+      this.pushData(this.dat);
+      });
     
   }
+  pushData(data: any)
+  {
+    data += "GGWP";
+    this.orchestrator.ready({
+      kind: LayerKind.Presentation,
+      direction: this.direction
+    }, { blocks: [this.contentToData(data)]} );
+
+  }
+  
+contentToData(data: string): DataBlock {
+  // TODO: Load data as bytes, use encoding?
+  //this.data = ;
+  return { bytes: [data] };
+}
 
   ngOnDestroy() {
     this.subscription.unsubscribe();

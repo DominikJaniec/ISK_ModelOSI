@@ -48,7 +48,7 @@ export class StreamLayer {
     var data;
     this.downstream.dataSubject.subscribe(r => data = r.blocks);
     return data;
-}
+  }
 }
 
 interface LayersMap {
