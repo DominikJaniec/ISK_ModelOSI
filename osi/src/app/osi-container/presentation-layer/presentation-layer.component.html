@@ -7,9 +7,30 @@
       Zapewnia tłumaczenie danych, definiowanie ich formatu oraz odpowiednią składnię. Umożliwia przekształcenie danych na postać standardową, niezależną od aplikacji. Rozwiązuje takie problemy jak niezgodność reprezentacji liczb, znaków końca wiersza, liter narodowych itp. Odpowiada także za kompresję i szyfrowanie. 
     </p>
   </div>
-  <div class="row">
+  <!--*ngIf="dat"-->
+  <div *ngIf="dat">
     Dane zuploadowane przez Ciebie wyglądają na razie następująco:
-    <div class="data">{{dat}}</div>
+    <div class="data-container" style="margin-bottom: 10px">{{dat}}</div>
+    Teraz, możesz je zaszyfrować, wybierz rodzaj szyfrowania:
+    <select #cipherSelect class="osi-select" (change)="onCipherSelectChange($event.target.value)">
+      <option *ngFor="let cipher of ciphers" [value]="cipher.id">
+        {{cipher.name}}
+      </option>
+    </select>
+    <div *ngIf="selectedCipher">
+      <div class="osi-input--wide" >
+        Podaj klucz szyfrowania:
+        <input class="osi-input--wide" [(ngModel)]="cipherKey" />
+      </div>
+      <div class="osi-button-container">
+        <button class="osi-button" (click)="EncryptData()">Zaszyfruj wiadomość</button>
+      </div>
+    </div>
+    
+    <div class="osi-input--wide" *ngIf="encryptedData">
+      Twoje dane są teraz zaszyfrowane, i wyglądają następująco: 
+      <div class="data-container">{{encryptedData}}</div>
+    </div>
   </div>
 
 </div>

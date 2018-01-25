@@ -1,0 +1,28 @@
+.data-container
+{
+  border: 1px solid #dedede;
+  padding: 5px;
+  margin: 15px 0 5px 0;
+  width: 100%;
+}
+
+.osi-select {
+  height: 25px;
+  margin-left: 15px;
+}
+
+.osi-input--wide {
+  margin: 5px 0 5px 0;
+  width: 100%;
+}
+
+.osi-button-container {
+  position: relative;
+  width: 100%;
+  height: 35px;
+}
+
+.osi-button {
+  position: absolute;
+  right: 0;
+}
