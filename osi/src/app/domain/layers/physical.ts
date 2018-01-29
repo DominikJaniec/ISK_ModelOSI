@@ -1,53 +1,57 @@
 import { Format, Symbol } from '../symbol';
 
+export interface Config {
+  readonly format: Format;
+  readonly blockSize: number;
+}
+
+export interface PhysicalBlock {
+  readonly index: number;
+  readonly format: Format;
+  readonly symbols: string;
+}
+
 export class PhysicalLayer {
-  displayFormat = Format.Hexadecimal;
-  bytesBlockSize = 32;
-  content: Block[] = [];
+  process(cfg: Config, content: string): PhysicalBlock[] {
+    const bytes = this.toBytes(content);
+    const blocks: PhysicalBlock[] = [];
 
-  load(content: string) {
-    const bytes = toBytes(content);
-    const blocks: Block[] = [];
-
-    let index = 0;
-    let current = '';
+    let blockIndex = 0;
+    let currentSymbols = '';
     for (let i = 0; i < bytes.length; ++i) {
-      current += Symbol.fromByte(bytes[i], this.displayFormat);
+      currentSymbols += Symbol.fromByte(bytes[i], cfg.format);
 
-      if (this.nextBlock(i)) {
-        blocks.push(this.makeBlock(index, current));
+      if (this.endsOfBlock(cfg, i)) {
+        blocks.push({
+          index: blockIndex,
+          format: cfg.format,
+          symbols: currentSymbols
+        });
 
-        current = '';
-        ++index;
+        currentSymbols = '';
+        ++blockIndex;
       }
     }
 
-    if (current !== '') {
+    if (currentSymbols !== '') {
       // TODO: Should we provide padding to block's size?
-      blocks.push(this.makeBlock(index, current));
+      blocks.push({
+        index: blockIndex,
+        format: cfg.format,
+        symbols: currentSymbols
+      });
     }
 
-    this.content = blocks;
+    return blocks;
   }
 
-  private makeBlock(index: number, symbols: string) {
-    return new Block(index, this.displayFormat, symbols);
+  private toBytes(data: string): number[] {
+    // TODO: We should deal also with other coding than ASCII.
+    return data.split('').map(c => c.charCodeAt(0));
   }
 
-  private nextBlock(i: number): boolean {
-    return i % this.bytesBlockSize === this.bytesBlockSize - 1;
+  private endsOfBlock(cfg: Config, idx: number): boolean {
+    const maxIndex = cfg.blockSize - 1;
+    return idx % cfg.blockSize === maxIndex;
   }
-}
-
-export class Block {
-  constructor(
-    readonly index: number,
-    readonly format: Format,
-    readonly symbols: string
-  ) {}
-}
-
-function toBytes(data: string): number[] {
-  // TODO: We should deal also with other coding than ASCII.
-  return data.split('').map(c => c.charCodeAt(0));
 }
