@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  Output,
+  EventEmitter
+} from '@angular/core';
 
 import { OrchestratorService } from '../orchestrator.service';
 import { DataBlock } from '../domain/layers';
@@ -9,12 +16,16 @@ import { DataBlock } from '../domain/layers';
   styleUrls: ['./file-loader.component.css']
 })
 export class FileLoaderComponent implements OnInit, OnDestroy {
+  @Input() loadedMaxSize = 200;
+  @Output() dataUpdated: EventEmitter<string> = new EventEmitter<string>();
+
   isFileUploaded = false;
   reader = new FileReader();
 
   file: File;
   fileText: string;
   alertText: string;
+  binary: Blob;
 
   constructor(private readonly orchestrator: OrchestratorService) {}
 
@@ -41,18 +52,22 @@ export class FileLoaderComponent implements OnInit, OnDestroy {
     this.reader.readAsText(this.file);
 
     this.reader.onloadend = e => {
-      const fileContent = this.reader.result;
-      this.fileText = fileContent;
-      log('onloaded', fileContent);
+      this.fileText = this.extractSample(this.reader);
+      log('onloaded', this.fileText);
 
-      this.orchestrator.initializeFlow(contentToData(this.reader));
+      this.orchestrator.initializeFlow(this.getDataBlock());
+      this.dataUpdated.emit(this.fileText);
     };
   }
-}
 
-function contentToData(reader: FileReader): DataBlock {
-  // TODO: Load data as bytes, use encoding?
-  return { bytes: [] };
+  private extractSample(reader: FileReader): string {
+    // TODO: Load data as bytes, use encoding?
+    return (reader.result as string).substr(0, this.loadedMaxSize);
+  }
+
+  private getDataBlock(): DataBlock {
+    return { bytes: [this.fileText] };
+  }
 }
 
 function log(header: string, content: any) {

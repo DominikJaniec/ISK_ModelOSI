@@ -119,6 +119,11 @@ export class OrchestratorService {
     );
   }
 
+  getLayerData()
+  {
+    return this.readyLayerData.blocks;
+  }
+
   private pushIntoDownstreamOf(layerId: LayerId, data: LayerData) {
     this.isWaiting = false;
     this.withDownstreamOf(
@@ -195,5 +200,5 @@ export function registerDummyRepeater(
 ): Subscription {
   return orchestrator
     .registerLayer(layerId)
-    .layerData.subscribe(data => orchestrator.ready(layerId, data));
+    .layerData.subscribe(data => { orchestrator.ready(layerId, data); console.log("AM HERE! - " + layerId); });
 }

@@ -20,7 +20,7 @@ export class Symbol {
       : Symbol.toSymbolsOf(kind, byte);
   }
 
-  static sizeFor(kind: Format): number {
+  static sizeOfByteFor(kind: Format): number {
     switch (kind) {
       case Format.Binary:
         return 8;
@@ -38,7 +38,7 @@ export class Symbol {
   }
 
   private static toSymbolsOf(kind: Format, value: number): string {
-    const size = Symbol.sizeFor(kind);
+    const size = Symbol.sizeOfByteFor(kind);
     const shift = Symbol.shiftFor(kind);
     const mask = Symbol.maskFor(kind);
 

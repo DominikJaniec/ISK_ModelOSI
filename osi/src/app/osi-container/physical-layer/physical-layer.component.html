@@ -1,13 +1,33 @@
 <div class="physical-layer__container">
-  physical-layer works in {{getModeName()}} Mode!
-  <section>
-    <input #fake placeholder="fake input" (blur)="fakeChanged(fake.value)">
-    <span>Block size: {{layer.bytesBlockSize}} bytes.</span>
-    <span>Format: {{getFormat()}}.</span>
+  <section class="config">
+    <label>
+      Wyświetlaj dane:
+      <select [(ngModel)]="displayFormat" (change)="setDisplayBlocks()">
+        <option *ngFor="let format of availableFormats" [ngValue]="format">
+          {{format.name}}
+        </option>
+      </select>
+    </label>
+    <label>
+      Bloki o rozmiarze:
+      <select [(ngModel)]="transferBlockSize" (change)="processLayerData()">
+        <option *ngFor="let size of availableBlockSizes" [ngValue]="size">
+          {{size}}
+        </option>
+      </select>
+    </label>
   </section>
-  <section>
-    <pre *ngFor="let block of layer.content">
-      {{block.index}}. "{{block.symbols}}"
-    </pre>
+  <section class="blocks">
+    <header>
+      <span *ngIf="isSender()">Dane przesyłane przez medium:</span>
+      <span *ngIf="!isSender()">Dane odbierane przez medium:</span>
+    </header>
+    <ol class="layer-data-blocks">
+      <li *ngFor="let dataDlock of displayBlocks">
+        <div class="physical" *ngFor="let physical of dataDlock">
+          [{{physical.index}}]&nbsp;{{physical.symbols}}
+        </div>
+      </li>
+    </ol>
   </section>
 </div>

@@ -38,10 +38,16 @@ export class StreamLayer {
     this.downstream = downstream;
     this.dataSubject = new Subject<LayerData>();
     this.clearFromSubject = new Subject();
-
+    
     if (downstream !== null) {
       this.clearFromSubject.subscribe(_ => downstream.clearFromSubject.next());
     }
+  }
+
+  public getData(): LayerData {
+    var data;
+    this.downstream.dataSubject.subscribe(r => data = r.blocks);
+    return data;
   }
 }
 

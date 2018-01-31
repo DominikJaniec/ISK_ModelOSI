@@ -39,7 +39,7 @@ export class NavigatorComponent implements OnDestroy {
   sleepOption = availableSleepOptions[2];
   currentProgress: ProgressData;
   progressPercent: number;
-  autoNext = true;
+  autoNext = false;
 
   constructor(private readonly orchestrator: OrchestratorService) {
     this.sleepOptions = availableSleepOptions;
