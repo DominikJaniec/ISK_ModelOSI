@@ -1,3 +1,15 @@
 <div class="transport-layer__container">
-  transport-layer works in {{getModeName()}} Mode!
+  <header *ngIf="getModeName() != 'Odbiorca'" class="dscr-header" data-toggle="collapse" data-target="#dscr-tra">
+    Czym jest Warstwa Transportowa? <i class="far fa-question-circle"></i>
+  </header>
+  <div class="layer-description collapse" id="dscr-tra" [class.show]="isExpanded">
+    <p>
+      Warstwa transportowa (ang. host-to-host layer) gwarantuje pewność przesyłania danych oraz kieruje właściwe informacje do odpowiednich aplikacji. Opiera się to na wykorzystaniu portów określonych dla każdego połączenia. W jednym komputerze może istnieć wiele aplikacji wymieniających dane z tym samym komputerem w sieci i nie nastąpi wymieszanie się przesyłanych przez nie danych. To właśnie ta warstwa nawiązuje i zrywa połączenia między komputerami oraz zapewnia pewność transmisji.
+    </p>
+  </div>
+  <div *ngIf="dat">
+    <div>{{dat}}</div>
+    <div style="word-break: break-all">{{getBatchedstring(dateByteArray)}}</div>
+    <div>Parity Bit: {{parityBit}}</div>
+  </div>
 </div>

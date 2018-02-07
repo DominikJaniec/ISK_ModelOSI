@@ -1,5 +1,5 @@
 <div class="application-layer__container">
-  <header class="dscr-header" data-toggle="collapse" data-target="#dscr">
+  <header *ngIf="getModeName() != 'Odbiorca'" class="dscr-header" data-toggle="collapse" data-target="#dscr">
     Czym jest Warstwa Aplikacji? <i class="far fa-question-circle"></i>
   </header>
   <div class="layer-description collapse" id="dscr" [class.show]="isExpanded">
@@ -13,8 +13,10 @@
         <li>Telnet, protokół emulacji terminala jest używany do logowania się zdalnie do hostów.</li>
       </ul>
   </div>
-  <app-file-loader (dataUpdated)="fileChanged($event)"></app-file-loader>
+  <app-file-loader  *ngIf="getModeName() != 'Odbiorca'" (dataUpdated)="fileChanged($event)"></app-file-loader>
   <div>
-
+    <div *ngIf="getModeName() == 'Odbiorca'">
+      {{dat}}
+    </div>
   </div>
 </div>
