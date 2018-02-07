@@ -1,5 +1,5 @@
 <div class="presentation-layer__container">
-  <header class="dscr-header" data-toggle="collapse" data-target="#dscr-app">
+  <header *ngIf="getModeName() != 'Odbiorca'" class="dscr-header" data-toggle="collapse" data-target="#dscr-app">
     Czym jest Warstwa Prezentacji? <i class="far fa-question-circle"></i>
   </header>
   <div class="layer-description collapse" id="dscr-app" [class.show]="isExpanded">

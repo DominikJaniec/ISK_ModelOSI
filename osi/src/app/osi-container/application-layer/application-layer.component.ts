@@ -19,6 +19,8 @@ export class ApplicationLayerComponent implements OnDestroy, LayerContent {
   private direction: Direction;
   isExpanded = false;
   fileText: string;
+  data: LayerData;
+  dat: string;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
@@ -34,6 +36,14 @@ export class ApplicationLayerComponent implements OnDestroy, LayerContent {
       this.orchestrator
     );
     this.direction = direction;
+
+    this.orchestrator.registerLayer({
+      kind: LayerKind.Application,
+      direction: direction
+    }).layerData.subscribe(data => {
+      this.data = data;
+      this.dat = data.blocks[0].bytes[0];
+    });
   }
 
   ngOnDestroy() {

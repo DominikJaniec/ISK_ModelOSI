@@ -9,6 +9,7 @@ import {
 import { TranslateService } from '../../translate.service';
 import { LayerKind, Direction, LayerData, LayerId, DataBlock } from '../../domain/layers';
 import { LayerContent } from '../layer-content';
+import * as LZString from "lz-string";
 
 @Component({
   selector: 'app-presentation-layer',
@@ -20,16 +21,28 @@ export class PresentationLayerComponent implements OnDestroy, LayerContent {
   private direction: Direction;
   data: LayerData;
   dat: string;
-  ciphers: cipherAlgorithms[];
-  selectedCipher: cipherAlgorithms;
+  ciphers: Types[];
+  compressMethods: Types[];
+  selectedCompressMethod: Types;
+  selectedCipher: Types;
   cipherKey: string = "";
   encryptedData: string = "";
   deshifre: string = "";
+  outputData: string = "";
+
 
   constructor(
     private readonly orchestrator: OrchestratorService,
     private readonly translate: TranslateService
   ) {
+    this.compressMethods = [
+      { name: "", id: 0 },
+      { name: "Simple", id: 1 },
+      { name: "Base64", id: 2 },
+      { name: "Encoded Uri component", id: 3 },
+      { name: "UTF16", id: 4 }
+    ]
+
     this.ciphers = [
       { name: "", id: 0 },
       { name: "AES", id: 1 },
@@ -43,7 +56,6 @@ export class PresentationLayerComponent implements OnDestroy, LayerContent {
   }
 
   initialize(direction: Direction) {
-    
 
     this.subscription = registerDummyRepeater(
       {
@@ -61,7 +73,7 @@ export class PresentationLayerComponent implements OnDestroy, LayerContent {
       {
       this.data = data;
       this.dat = data.blocks[0].bytes[0];
-      this.pushData(this.dat);
+      this.pushData(this.outputData);
       });
     
   }
@@ -110,7 +122,31 @@ export class PresentationLayerComponent implements OnDestroy, LayerContent {
         this.encryptedData = CryptoJS.RC4Drop.encrypt(data, cipherKey).toString();
       }
     }
+
+    this.outputData = this.encryptedData;
+    this.pushData(this.outputData);
   }
+
+
+  //CompressData() {
+  //  var data = this.outputData.toString();
+  //  var compressedData = "";
+
+  //  switch (this.selectedCompressMethod.id) {
+  //    case 1: {
+  //      compressedData = LZString.compress(data);
+  //    }
+  //    case 2: {
+  //      compressedData = LZString.compressToBase64(data);
+  //    }
+  //    case 3: {
+  //      compressedData = LZString.compressToEncodedURIComponent(data);
+  //    }
+  //    case 4: {
+  //      compressedData = LZString.compressToUTF16(data);
+  //    }
+  //  }
+  //} /*coś tutaj pluje błędami w kompilacji TBD*/
 
 
 contentToData(data: string): DataBlock {
@@ -128,7 +164,7 @@ contentToData(data: string): DataBlock {
   }
 }
 
-class cipherAlgorithms {
+class Types {
   name: string;
   id: number;
 }

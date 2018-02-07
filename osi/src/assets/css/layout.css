@@ -26,3 +26,9 @@
   position: absolute;
   right: 0;
 }
+
+.layer-description {
+  border: 1px dashed #dedede;
+  padding: 8px;
+  background: #e4ffcd;
+}
