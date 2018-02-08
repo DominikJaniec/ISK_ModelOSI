@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Format, Symbol } from '../../domain/symbol';
+import * as CRC from 'crc';
 
 import {
   OrchestratorService,
@@ -21,12 +22,16 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
   data: LayerData;
   dat: string;
   dateByteArray: string;
+  dateByteArrayWithParityBit: string;
   parityBit: number = 0;
+  licznik: number = 0;
+  crcValue: string;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
     private readonly translate: TranslateService
-  ) {}
+  ) {
+  }
 
   initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
@@ -37,7 +42,6 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
       this.orchestrator
     );
     this.direction = direction;
-
     this.orchestrator.registerLayer({
       kind: LayerKind.Transport,
       direction: direction
@@ -46,6 +50,8 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
       this.dat = data.blocks[0].bytes[0];
       this.dateByteArray = this.process(this.dat);
       this.parityBit = this.getParityBit(this.dateByteArray);
+      this.dateByteArrayWithParityBit = this.dateByteArray + this.parityBit.toString();
+      this.crcValue = this.crc(this.dateByteArray);
     });
   }
 
@@ -64,14 +70,41 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
     return data.split('').map(c => c.charCodeAt(0));
   }
 
+  crc(bytesStringArray: string): string {
+    var array = (bytesStringArray += "000").split('');
+    var divisor = "1011";
+
+    for (let i = 0; i < (array.length - 4); )
+    {
+      for (i; array[i].valueOf() == ("0").valueOf() && i < (array.length - 4); i++) { }
+
+      for (let j = 0; j < divisor.length; j++) {
+        if (divisor[j].valueOf() == array[i + j].valueOf())
+            array[i + j] = '0';
+        else
+          array[i + j] = '1';
+      }
+
+      var coubter = 0;
+      for (let y = 0; y < array.length - 3; y++)
+      {
+        if (array[y].valueOf() == ("1").valueOf())
+          coubter++;
+      }
+      if (coubter == 0)
+        break;
+    }
+    return [array[array.length - 3], array[array.length - 2], array[array.length - 1],].join("");
+  }
+
   getBatchedstring(data: string): string {
     var processedData = "";
-    if (data.length > 50) {
+    if (data.length > 60) {
       let batches: string[] = [];
       for (let i = 0; i < data.length; i++)
       {
-        batches.push(data.slice(i, i + 25));
-        i += 25;
+        batches.push(data.slice(i, i + 30));
+        i += 30;
       }
       processedData = batches[0] + "..." + batches[batches.length - 1];
     }

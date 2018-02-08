@@ -8,8 +8,13 @@
     </p>
   </div>
   <div *ngIf="dat">
-    <div>{{dat}}</div>
-    <div style="word-break: break-all">{{getBatchedstring(dateByteArray)}}</div>
-    <div>Parity Bit: {{parityBit}}</div>
+    Dane zuploadowane przez Ciebie wyglądają na razie następująco:
+    <div class="data-container" style="margin-bottom: 10px">{{dat}}</div>
+    W reprezentacji bitowej natomiast tak:
+    <div class="data-container">{{getBatchedstring(dateByteArray)}}</div>
+    <p>Bit parzystości dla takiej kombinacji to: <b>{{parityBit}}</b> (Gdyż ilość jedynek w kombinacji bitów jest parzysta)</p>
+    <p>Ten Bit parzystości dodany jest teraz na koniec ciągu bitowego. Plik przechodząc przez warstwę transportową po stronie odbiorcy ponownie zostanie poddany procesowi szukania bitu parzystości a wynik będzie porównany z wartością którą w tym momencie dodamy do bitowej reprezentacji naszego pliku:</p>
+    <div class="data-container">{{getBatchedstring(dateByteArrayWithParityBit)}}</div>
+    {{crcValue}}
   </div>
 </div>
