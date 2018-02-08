@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 import { Format, Symbol } from '../../domain/symbol';
+import * as CRC from 'crc';
 
 import {
   OrchestratorService,
@@ -21,12 +22,24 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
   data: LayerData;
   dat: string;
   dateByteArray: string;
+  dateByteArrayWithParityBit: string;
   parityBit: number = 0;
+  licznik: number = 0;
+  crcValue: string;
+  controlSumMethods: Types[];
+  selectedControlSumMethod: Types;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
     private readonly translate: TranslateService
-  ) {}
+  ) {
+    this.controlSumMethods = [
+      { name: "", id: 0 },
+      { name: "Bit Parzystości", id: 1 },
+      { name: "CRC3", id: 2 }
+    ]
+    this.selectedControlSumMethod = this.controlSumMethods[0];
+  }
 
   initialize(direction: Direction) {
     this.subscription = registerDummyRepeater(
@@ -37,16 +50,49 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
       this.orchestrator
     );
     this.direction = direction;
-
     this.orchestrator.registerLayer({
       kind: LayerKind.Transport,
       direction: direction
     }).layerData.subscribe(data => {
       this.data = data;
       this.dat = data.blocks[0].bytes[0];
-      this.dateByteArray = this.process(this.dat);
-      this.parityBit = this.getParityBit(this.dateByteArray);
+      this.dateByteArray = this.process(this.dat);      
     });
+  }
+
+  contentToData(data: string): DataBlock {
+    // TODO: Load data as bytes, use encoding?
+    //this.data = ;
+    return { bytes: [data] };
+  }
+
+  pushData(data: any) {
+    this.orchestrator.ready({
+      kind: LayerKind.Transport,
+      direction: this.direction
+    }, { blocks: [this.contentToData(data)] });
+
+  }
+
+  onCheckSumSelectChange(value: number) {
+    if (value > 0)
+      this.selectedControlSumMethod = this.controlSumMethods.find(r => r.id == value);
+    else
+      this.selectedControlSumMethod = null;
+
+    if (this.selectedControlSumMethod.id == 1)
+    {
+      this.parityBit = this.getParityBit(this.dateByteArray);
+      this.dateByteArrayWithParityBit = this.dateByteArray + this.parityBit.toString();
+
+      this.pushData(this.dateByteArrayWithParityBit);
+    }
+    if (this.selectedControlSumMethod.id == 2)
+    {
+      this.crcValue = this.getCrcValue(this.dateByteArray);
+
+      this.pushData(this.dateByteArray + this.crcValue);
+    }
   }
 
   process(content: string): string {
@@ -64,14 +110,53 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
     return data.split('').map(c => c.charCodeAt(0));
   }
 
+  getCrcValue(bytesStringArray: string): string {
+    var array = this.crc(bytesStringArray += "000");
+    return [array[array.length - 3], array[array.length - 2], array[array.length - 1],].join("");
+  }
+
+  reverseCrc(bytesStringArray: string): number {
+    var array = this.crc(bytesStringArray);
+
+    console.log(parseInt(array[array.length - 3]) + parseInt(array[array.length - 2]) + parseInt(array[array.length - 1]));
+    return parseInt(array[array.length - 3]) + parseInt(array[array.length - 2]) + parseInt(array[array.length - 1]);
+  }
+
+  crc(stringArray: string): string[]
+  {
+    var array = (stringArray).split('');
+    var divisor = "1011";
+
+    for (let i = 0; i < (array.length - 4);) {
+      for (i; array[i].valueOf() == ("0").valueOf() && i < (array.length - 4); i++) { }
+
+      for (let j = 0; j < divisor.length; j++) {
+        if (divisor[j].valueOf() == array[i + j].valueOf())
+          array[i + j] = '0';
+        else
+          array[i + j] = '1';
+      }
+
+      var oneCounter = 0;
+      for (let y = 0; y < array.length - 3; y++) {
+        if (array[y].valueOf() == ("1").valueOf())
+          oneCounter++;
+      }
+      if (oneCounter == 0)
+        break;
+    }
+    return array;
+  }
+
+
   getBatchedstring(data: string): string {
     var processedData = "";
-    if (data.length > 50) {
+    if (data.length > 60) {
       let batches: string[] = [];
       for (let i = 0; i < data.length; i++)
       {
-        batches.push(data.slice(i, i + 25));
-        i += 25;
+        batches.push(data.slice(i, i + 30));
+        i += 30;
       }
       processedData = batches[0] + "..." + batches[batches.length - 1];
     }
@@ -103,4 +188,10 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
   getModeName() {
     return this.translate.direction(this.direction);
   }
+}
+
+
+class Types {
+  name: string;
+  id: number;
 }

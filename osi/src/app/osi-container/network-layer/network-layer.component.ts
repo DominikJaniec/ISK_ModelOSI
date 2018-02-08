@@ -17,6 +17,8 @@ import { LayerContent } from '../layer-content';
 export class NetworkLayerComponent implements OnDestroy, LayerContent {
   private subscription: Subscription;
   private direction: Direction;
+  data: LayerData;
+  dat: string;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
@@ -32,6 +34,14 @@ export class NetworkLayerComponent implements OnDestroy, LayerContent {
       this.orchestrator
     );
     this.direction = direction;
+
+    this.orchestrator.registerLayer({
+      kind: LayerKind.Network,
+      direction: direction
+    }).layerData.subscribe(data => {
+      this.data = data;
+      this.dat = data.blocks[0].bytes[0];
+    });
   }
 
   ngOnDestroy() {
