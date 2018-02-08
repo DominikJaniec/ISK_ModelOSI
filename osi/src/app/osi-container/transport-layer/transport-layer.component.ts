@@ -51,7 +51,8 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
       this.dateByteArray = this.process(this.dat);
       this.parityBit = this.getParityBit(this.dateByteArray);
       this.dateByteArrayWithParityBit = this.dateByteArray + this.parityBit.toString();
-      this.crcValue = this.crc(this.dateByteArray);
+      this.crcValue = this.getCrcValue(this.dateByteArray);
+      this.reverseCrc(this.dateByteArray + this.crcValue);
     });
   }
 
@@ -70,32 +71,44 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
     return data.split('').map(c => c.charCodeAt(0));
   }
 
-  crc(bytesStringArray: string): string {
-    var array = (bytesStringArray += "000").split('');
+  getCrcValue(bytesStringArray: string): string {
+    var array = this.crc(bytesStringArray += "000");
+    return [array[array.length - 3], array[array.length - 2], array[array.length - 1],].join("");
+  }
+
+  reverseCrc(bytesStringArray: string): number {
+    var array = this.crc(bytesStringArray);
+
+    console.log(parseInt(array[array.length - 3]) + parseInt(array[array.length - 2]) + parseInt(array[array.length - 1]));
+    return parseInt(array[array.length - 3]) + parseInt(array[array.length - 2]) + parseInt(array[array.length - 1]);
+  }
+
+  crc(stringArray: string): string[]
+  {
+    var array = (stringArray).split('');
     var divisor = "1011";
 
-    for (let i = 0; i < (array.length - 4); )
-    {
+    for (let i = 0; i < (array.length - 4);) {
       for (i; array[i].valueOf() == ("0").valueOf() && i < (array.length - 4); i++) { }
 
       for (let j = 0; j < divisor.length; j++) {
         if (divisor[j].valueOf() == array[i + j].valueOf())
-            array[i + j] = '0';
+          array[i + j] = '0';
         else
           array[i + j] = '1';
       }
 
-      var coubter = 0;
-      for (let y = 0; y < array.length - 3; y++)
-      {
+      var oneCounter = 0;
+      for (let y = 0; y < array.length - 3; y++) {
         if (array[y].valueOf() == ("1").valueOf())
-          coubter++;
+          oneCounter++;
       }
-      if (coubter == 0)
+      if (oneCounter == 0)
         break;
     }
-    return [array[array.length - 3], array[array.length - 2], array[array.length - 1],].join("");
+    return array;
   }
+
 
   getBatchedstring(data: string): string {
     var processedData = "";
