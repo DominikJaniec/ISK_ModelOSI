@@ -60,6 +60,20 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
     });
   }
 
+  contentToData(data: string): DataBlock {
+    // TODO: Load data as bytes, use encoding?
+    //this.data = ;
+    return { bytes: [data] };
+  }
+
+  pushData(data: any) {
+    this.orchestrator.ready({
+      kind: LayerKind.Transport,
+      direction: this.direction
+    }, { blocks: [this.contentToData(data)] });
+
+  }
+
   onCheckSumSelectChange(value: number) {
     if (value > 0)
       this.selectedControlSumMethod = this.controlSumMethods.find(r => r.id == value);
@@ -70,11 +84,14 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
     {
       this.parityBit = this.getParityBit(this.dateByteArray);
       this.dateByteArrayWithParityBit = this.dateByteArray + this.parityBit.toString();
+
+      this.pushData(this.dateByteArrayWithParityBit);
     }
     if (this.selectedControlSumMethod.id == 2)
     {
       this.crcValue = this.getCrcValue(this.dateByteArray);
-      this.reverseCrc(this.dateByteArray + this.crcValue);
+
+      this.pushData(this.dateByteArray + this.crcValue);
     }
   }
 
