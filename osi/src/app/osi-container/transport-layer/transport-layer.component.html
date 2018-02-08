@@ -13,9 +13,26 @@
     <div class="data-container" style="margin-bottom: 10px">{{dat}}</div>
     W reprezentacji bitowej natomiast tak:
     <div class="data-container">{{getBatchedstring(dateByteArray)}}</div>
-    <p>Bit parzystości dla takiej kombinacji to: <b>{{parityBit}}</b> (Gdyż ilość jedynek w kombinacji bitów jest parzysta)</p>
-    <p>Ten Bit parzystości dodany jest teraz na koniec ciągu bitowego. Plik przechodząc przez warstwę transportową po stronie odbiorcy ponownie zostanie poddany procesowi szukania bitu parzystości a wynik będzie porównany z wartością którą w tym momencie dodamy do bitowej reprezentacji naszego pliku:</p>
-    <div class="data-container">{{getBatchedstring(dateByteArrayWithParityBit)}}</div>
-    {{crcValue}}
+    Teraz możemy wybrać metodę sumy kontrolnej pliku:
+    <select #sumControlMethodSelect class="osi-select" (change)="onCheckSumSelectChange($event.target.value)">
+      <option *ngFor="let method of controlSumMethods" [value]="method.id">
+        {{method.name}}
+      </option>
+    </select>
+    <div *ngIf="selectedControlSumMethod.id == 1">
+      <p>Bit parzystości dla takiej kombinacji to: <b>{{parityBit}}</b> (Gdyż ilość jedynek w kombinacji bitów jest parzysta)</p>
+      <p>Ten Bit parzystości dodany jest teraz na koniec ciągu bitowego. Plik przechodząc przez warstwę transportową po stronie odbiorcy ponownie zostanie poddany procesowi szukania bitu parzystości a wynik będzie porównany z wartością którą w tym momencie dodamy do bitowej reprezentacji naszego pliku:</p>
+      <div class="data-container">{{getBatchedstring(dateByteArrayWithParityBit)}}</div>
+    </div>
+    <div *ngIf="selectedControlSumMethod.id == 2">
+      <div class="layer-description">
+        Algorytm wyznaczania sumy kontrolnej CRC został bardzo dobrze przedstawiony na stronie <a href="https://pl.wikipedia.org/wiki/Cykliczny_kod_nadmiarowy" target="_blank">Wikipedii pod tym linkiem</a><br/>
+        Dla zwiększenia czytelności, wybrano algorytm CRC3
+      </div>
+      <p>Suma CRC to: <b>{{crcValue}}</b></p>
+      <p>Wartośc ta zostanie dodana do ciągu bitowego. Warstwa transportowa po stronie odbiorcy, sprawdzi tak powstały ciąg ponownie, używając tego samego algorytmu. Jeżeli przesył nie był niczym zakłócony, i plik dotarł w neinaruszonej postaci, wartość sumy kontrolnej po stronie odbiorcy będzie miała wartość 0.</p>
+      <p>Wartośc ciągu bitów z dodaną sumą kontrolną CRC wygląda teraz następująco:</p>
+      <div class="data-container">{{getBatchedstring(dateByteArrayWithParityBit + crcValue)}}</div>
+    </div>    
   </div>
 </div>

@@ -26,11 +26,19 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
   parityBit: number = 0;
   licznik: number = 0;
   crcValue: string;
+  controlSumMethods: Types[];
+  selectedControlSumMethod: Types;
 
   constructor(
     private readonly orchestrator: OrchestratorService,
     private readonly translate: TranslateService
   ) {
+    this.controlSumMethods = [
+      { name: "", id: 0 },
+      { name: "Bit Parzystości", id: 1 },
+      { name: "CRC3", id: 2 }
+    ]
+    this.selectedControlSumMethod = this.controlSumMethods[0];
   }
 
   initialize(direction: Direction) {
@@ -48,12 +56,26 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
     }).layerData.subscribe(data => {
       this.data = data;
       this.dat = data.blocks[0].bytes[0];
-      this.dateByteArray = this.process(this.dat);
+      this.dateByteArray = this.process(this.dat);      
+    });
+  }
+
+  onCheckSumSelectChange(value: number) {
+    if (value > 0)
+      this.selectedControlSumMethod = this.controlSumMethods.find(r => r.id == value);
+    else
+      this.selectedControlSumMethod = null;
+
+    if (this.selectedControlSumMethod.id == 1)
+    {
       this.parityBit = this.getParityBit(this.dateByteArray);
       this.dateByteArrayWithParityBit = this.dateByteArray + this.parityBit.toString();
+    }
+    if (this.selectedControlSumMethod.id == 2)
+    {
       this.crcValue = this.getCrcValue(this.dateByteArray);
       this.reverseCrc(this.dateByteArray + this.crcValue);
-    });
+    }
   }
 
   process(content: string): string {
@@ -149,4 +171,10 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
   getModeName() {
     return this.translate.direction(this.direction);
   }
+}
+
+
+class Types {
+  name: string;
+  id: number;
 }
