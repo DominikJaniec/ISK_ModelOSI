@@ -20,7 +20,7 @@
       </option>
     </select>
     <div *ngIf="selectedControlSumMethod.id == 1">
-      <p>Bit parzystości dla takiej kombinacji to: <b>{{parityBit}}</b> (Gdyż ilość jedynek w kombinacji bitów jest parzysta)</p>
+      <p>Bit parzystości dla takiej kombinacji to: <b>{{parityBit}}</b> (Gdyż ilość jedynek w kombinacji bitów jest <span *ngIf="parityBit == 0">parzysta</span><span *ngIf="parityBit == 1">nieparzysta</span>)</p>
       <p>Ten Bit parzystości dodany jest teraz na koniec ciągu bitowego. Plik przechodząc przez warstwę transportową po stronie odbiorcy ponownie zostanie poddany procesowi szukania bitu parzystości a wynik będzie porównany z wartością którą w tym momencie dodamy do bitowej reprezentacji naszego pliku:</p>
       <div class="data-container">{{getBatchedstring(dateByteArrayWithParityBit)}}</div>
     </div>
