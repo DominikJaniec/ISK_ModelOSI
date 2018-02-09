@@ -8,7 +8,7 @@ import {
   registerDummyRepeater
 } from '../../orchestrator.service';
 import { TranslateService } from '../../translate.service';
-import { LayerKind, Direction, LayerData, LayerId } from '../../domain/layers';
+import { LayerKind, Direction, LayerData, LayerId, DataBlock } from '../../domain/layers';
 import { LayerContent } from '../layer-content';
 
 @Component({
@@ -56,7 +56,7 @@ export class TransportLayerComponent implements OnDestroy, LayerContent {
     }).layerData.subscribe(data => {
       this.data = data;
       this.dat = data.blocks[0].bytes[0];
-      this.dateByteArray = this.process(this.dat);      
+      this.dateByteArray = this.process(this.dat);
     });
   }
 
