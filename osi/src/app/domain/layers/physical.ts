@@ -12,8 +12,7 @@ export interface PhysicalBlock {
 }
 
 export class PhysicalLayer {
-  process(cfg: Config, content: string): PhysicalBlock[] {
-    const bytes = this.toBytes(content);
+  process(cfg: Config, bytes: number[]): PhysicalBlock[] {
     const blocks: PhysicalBlock[] = [];
 
     let blockIndex = 0;
@@ -34,24 +33,53 @@ export class PhysicalLayer {
     }
 
     if (currentSymbols !== '') {
-      // TODO: Should we provide padding to block's size?
+      const padded = currentSymbols.padEnd(
+        this.maxBlockLength(cfg),
+        Symbol.nullOf(cfg.format)
+      );
+
       blocks.push({
         index: blockIndex,
         format: cfg.format,
-        symbols: currentSymbols
+        symbols: padded
       });
     }
 
     return blocks;
   }
 
-  private toBytes(data: string): number[] {
-    // TODO: We should deal also with other coding than ASCII.
-    return data.split('').map(c => c.charCodeAt(0));
+  unprocess(cfg: Config, blocks: PhysicalBlock[]): number[] {
+    const byteSize = Symbol.sizeOfByteFor(cfg.format);
+    const bytes: number[] = [];
+
+    for (const block of blocks) {
+      this.ensureSameFormat(cfg, block);
+
+      for (let i = 0; i < block.symbols.length; i += byteSize) {
+        const byteSymbols = block.symbols.substr(i, byteSize);
+        bytes.push(Symbol.toByte(byteSymbols, cfg.format));
+      }
+    }
+
+    return bytes;
   }
 
   private endsOfBlock(cfg: Config, idx: number): boolean {
     const maxIndex = cfg.blockSize - 1;
     return idx % cfg.blockSize === maxIndex;
+  }
+
+  private maxBlockLength(cfg: Config): number {
+    return cfg.blockSize * Symbol.sizeOfByteFor(cfg.format);
+  }
+
+  private ensureSameFormat(cfg: Config, block: PhysicalBlock) {
+    if (cfg.format !== block.format) {
+      throw new Error(
+        `Block's (${Format[block.format]}) and` +
+          ` Config's (${Format[cfg.format]})` +
+          ` format mismatched.`
+      );
+    }
   }
 }

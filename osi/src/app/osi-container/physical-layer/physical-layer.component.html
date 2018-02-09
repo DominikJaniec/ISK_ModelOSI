@@ -23,10 +23,12 @@
       <span *ngIf="!isSender()">Dane odbierane przez medium:</span>
     </header>
     <ol class="layer-data-blocks">
-      <li *ngFor="let dataDlock of displayBlocks">
-        <div class="physical" *ngFor="let physical of dataDlock">
-          [{{physical.index}}]&nbsp;{{physical.symbols}}
-        </div>
+      <li *ngFor="let dataBlock of displayBlocks">
+        <ol class="physical">
+          <li *ngFor="let physical of dataBlock">
+            {{physical.symbols}}
+          </li>
+        </ol>
       </li>
     </ol>
   </section>

@@ -1,4 +1,9 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input
+} from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
 
 import { OrchestratorService } from '../../orchestrator.service';
@@ -17,6 +22,7 @@ import {
   PhysicalLayer
 } from '../../domain/layers/physical';
 import { Format } from '../../domain/symbol';
+import { Encoding, EncodingKind } from '../../domain/encoding';
 
 export interface FormatOption {
   name: string;
@@ -33,7 +39,8 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
   private readonly transferFormat = Format.Binary;
   private clearStreamSubscription: Subscription;
   private layerDataSubscription: Subscription;
-  private layerData: LayerData = { blocks: [] };
+  private sourceLayerData: LayerData = { blocks: [] };
+  private sourceDataBytes: number[][] = [];
   private direction: Direction;
 
   readonly availableBlockSizes = [8, 16, 20, 32, 42, 64, 100];
@@ -57,15 +64,14 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
     const observables = this.orchestrator.registerLayer(this.getLayerId());
 
     this.clearStreamSubscription = observables.clearStream.subscribe(() => {
-      this.layerData = { blocks: [] };
+      this.sourceLayerData = { blocks: [] };
+      this.sourceDataBytes = [];
       this.displayBlocks = [];
     });
 
     this.layerDataSubscription = observables.layerData.subscribe(data => {
-      if (this.isSender()) {
-        this.layerData = data;
-        this.processLayerData();
-      }
+      this.sourceLayerData = data;
+      this.processLayerData();
     });
   }
 
@@ -79,56 +85,28 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
   }
 
   setDisplayBlocks() {
-    if (!this.hasLayerData()) {
+    if (!this.hasData()) {
       return;
     }
 
     const cfg = this.getDisplayConfig();
-    this.displayBlocks = this.layerData.blocks.map(block =>
-      this.layerLogic.process(cfg, this.getSenderContent(block))
-    );
+    this.displayBlocks = this.getPhysicalBlocks(cfg);
   }
 
   processLayerData() {
-    if (!this.hasLayerData()) {
+    if (!this.hasData()) {
       return;
     }
 
+    this.extractBytesFromSource();
     this.setDisplayBlocks();
-    const cfg = this.getTransferConfig();
-    const listOfBinaries = this.layerData.blocks.map(block =>
-      this.layerLogic.process(cfg, this.getSenderContent(block))
-    );
 
-    const layerData = this.toLayerData(listOfBinaries);
+    const layerData = this.makeNextLayerData();
     this.orchestrator.ready(this.getLayerId(), layerData);
   }
 
-  private getLayerId(): LayerId {
-    return {
-      kind: LayerKind.Physical,
-      direction: this.direction
-    };
-  }
-
-  private hasLayerData(): boolean {
-    return this.layerData.blocks.length > 0;
-  }
-
-  private getSenderContent(dataBlocks: DataBlock): string {
-    if (dataBlocks.bytes instanceof Array) {
-      const data = dataBlocks.bytes as any[];
-      if (data.length === 1) {
-        const content = data[0];
-        if (typeof content === 'string') {
-          return content as string;
-        }
-      }
-    }
-
-    throw new Error(
-      'DataBlock.bytes is expected to be Array with single string - as current implementation works'
-    );
+  private hasData(): boolean {
+    return this.sourceLayerData.blocks.length > 0;
   }
 
   private getDisplayConfig(): Config {
@@ -145,24 +123,64 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
     };
   }
 
-  toLayerData(listOfBlocks: PhysicalBlock[][]): LayerData {
-    const dataBlocks: DataBlock[] = [];
-    for (const physicalBlocks of listOfBlocks) {
-      for (const block of physicalBlocks) {
-        if (block.format !== Format.Binary) {
-          throw this.notTransferableError(block.format);
-        }
-        dataBlocks.push({ bytes: block.symbols });
-      }
-    }
-    return { blocks: dataBlocks };
+  private getPhysicalBlocks(cfg: Config): PhysicalBlock[][] {
+    return this.sourceDataBytes.map(packet =>
+      this.layerLogic.process(cfg, packet)
+    );
   }
 
-  notTransferableError(format: Format): Error {
-    const message =
-      'Transferred block can be only as Binary' +
-      `, but got format: '${format}'.`;
+  private extractBytesFromSource() {
+    if (this.isSender()) {
+      this.sourceDataBytes = this.sourceLayerData.blocks
+        .map(block => this.extractSenderMessage(block))
+        .map(msg => Encoding.getBytesAs(EncodingKind.ASCII, msg));
+    } else {
+      const cfg = this.getTransferConfig();
+      this.sourceDataBytes = this.sourceLayerData.blocks.map(packet => {
+        const physicalBlocks = packet.bytes as PhysicalBlock[];
+        return this.layerLogic.unprocess(cfg, physicalBlocks);
+      });
+    }
+  }
 
-    return new Error(message);
+  private makeNextLayerData(): LayerData {
+    if (this.isSender()) {
+      const cfg = this.getTransferConfig();
+      const transferBlocks = this.getPhysicalBlocks(cfg).map(
+        packet => ({ bytes: packet } as DataBlock)
+      );
+
+      return { blocks: transferBlocks };
+    } else {
+      const messageBlocks = this.sourceDataBytes
+        .map(packet => Encoding.fromBytesAs(EncodingKind.ASCII, packet))
+        .map(msg => ({ bytes: msg } as DataBlock));
+
+      return { blocks: messageBlocks };
+    }
+  }
+
+  private getLayerId(): LayerId {
+    return {
+      kind: LayerKind.Physical,
+      direction: this.direction
+    };
+  }
+
+  private extractSenderMessage(dataBlocks: DataBlock): string {
+    if (dataBlocks.bytes instanceof Array) {
+      const data = dataBlocks.bytes as any[];
+      if (data.length === 1) {
+        const content = data[0];
+        if (typeof content === 'string') {
+          return content as string;
+        }
+      }
+    }
+
+    throw new Error(
+      'DataBlock.bytes is expected to be Array with single string' +
+        ' - as current implementation provides to Sender.'
+    );
   }
 }
