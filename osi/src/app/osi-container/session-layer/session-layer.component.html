@@ -1,30 +1,39 @@
 <div class="session-layer__container">
-  <header *ngIf="getModeName() != 'Odbiorca'" class="dscr-header" data-toggle="collapse" data-target="#dscr-sess">
-    Czym jest Warstwa Sesji? <i class="far fa-question-circle"></i>
-  </header>
-  <div class="layer-description collapse" id="dscr-sess" [class.show]="isExpanded">
-    <p>
-      Warstwa sesji otrzymuje od różnych aplikacji dane, które muszą zostać odpowiednio zsynchronizowane. Synchronizacja występuje między warstwami sesji systemu nadawcy i odbiorcy. Warstwa sesji „wie”, która aplikacja łączy się z którą, dzięki czemu może zapewnić właściwy kierunek przepływu danych – nadzoruje połączenie. Wznawia je po przerwaniu.
-    </p>
-  </div>
-  <div class="layer-description">
-    <p>Dla Przykładu: </p>
-    <p>
-      Twoja przeglądarka (np Google Chrome, czy Internet Explorer), otwiera jakąś stronę w internecie. Strona ta zawiera jakiś content, obrazki, text, może Warstwę angulara i jakąś logikę aplikacji (w Javie albo C#).
-      Wszystkie te elementy przechowywane są na serwerze w osobnych plikach. By mieć do nich dostęp, musi byc najpierw wywołane żądanie ściągnięcia pliku (np, polecenie GET).
-      Przeglądarka w tym momencie otwiera osobną sesję dla Ciebie na serwerze aplikacyjnym, by pobrac każdy z potrzebnych plików.
-      Warstwa sesji pilnuje, jakie pakiety i jakie dane należą do którego z tych plików, i sprawdza gdzie poszczególne pakiety zmierzają (W tym przykładzie - do Twojej przeglądarki).
-    </p>
-    <p>
-      Pozwala to pilnować dostępu do poszczególnych rządań i otwiera możliwość wykorzystania dodatkowych serwisów, jak na przykład serwisy Autentykacji, Autoryzacji. Dzięki warstwie sessji
-      możliwe jest również "odbudowanie" sesji, gdy ta z jakiegoś powodu zostanie nieoczekiwanie przerwana (np. przez krótkotrwałe przerwanie połączenia WiFi).
-    </p>
-    <p>
-      W programowaniu, najbliższym przykładem wykorzystania warstwy sesji są Java Session Beans - beany takie aktywne sa tylko tak długo, jak długo aktywną pozostaje sesja, a usuwane sa zaraz po zakończeniu rzeczonej sesji.<br />
-      Przykładem z życia natomiast, może być Live Streaming, gdzie przesyłane potoki obrazu i dźwięku muszą być ze sobą zsynchronizowane, by uniknąć irytującego przesunięcia obu potoków.
-    </p>
-    <p>
-      Dla naszego przykładu, warstwa sesji utworzy teraz sesję z odbiorcą. Upewni się że jest dostępne z nim połaczenie, i będzie pilnować przepływu danych z nim.
-    </p>
-</div>
+  <section *ngIf="getModeName() != 'Odbiorca'" class="info">
+    <header class="dscr-header" data-toggle="collapse" data-target="#dscr-sess">
+      Czym jest Warstwa Sesji?
+      <i class="far fa-question-circle"></i>
+    </header>
+    <div class="layer-description collapse" id="dscr-sess">
+      <p>
+        Warstwa sesji otrzymuje od różnych aplikacji dane, które muszą zostać odpowiednio zsynchronizowane. Synchronizacja występuje
+        między warstwami sesji systemu nadawcy i odbiorcy. Warstwa sesji „wie”, która aplikacja łączy się z którą, dzięki
+        czemu może zapewnić właściwy kierunek przepływu danych – nadzoruje połączenie. Wznawia je po przerwaniu.
+      </p>
+      <p>Dla Przykładu: </p>
+      <p>
+        Twoja przeglądarka (np Google Chrome, czy Internet Explorer), otwiera jakąś stronę w internecie. Strona ta zawiera jakiś
+        content, obrazki, text, może Warstwę angulara i jakąś logikę aplikacji (w Javie albo C#). Wszystkie te elementy przechowywane
+        są na serwerze w osobnych plikach. By mieć do nich dostęp, musi byc najpierw wywołane żądanie ściągnięcia pliku (np,
+        polecenie GET). Przeglądarka w tym momencie otwiera osobną sesję dla Ciebie na serwerze aplikacyjnym, by pobrac każdy
+        z potrzebnych plików. Warstwa sesji pilnuje, jakie pakiety i jakie dane należą do którego z tych plików, i sprawdza
+        gdzie poszczególne pakiety zmierzają (W tym przykładzie - do Twojej przeglądarki).
+      </p>
+      <p>
+        Pozwala to pilnować dostępu do poszczególnych rządań i otwiera możliwość wykorzystania dodatkowych serwisów, jak na przykład
+        serwisy Autentykacji, Autoryzacji. Dzięki warstwie sessji możliwe jest również "odbudowanie" sesji, gdy ta z jakiegoś
+        powodu zostanie nieoczekiwanie przerwana (np. przez krótkotrwałe przerwanie połączenia WiFi).
+      </p>
+      <p>
+        W programowaniu, najbliższym przykładem wykorzystania warstwy sesji są Java Session Beans - beany takie aktywne sa tylko
+        tak długo, jak długo aktywną pozostaje sesja, a usuwane sa zaraz po zakończeniu rzeczonej sesji.
+        <br /> Przykładem z życia natomiast, może być Live Streaming, gdzie przesyłane potoki obrazu i dźwięku muszą być ze sobą
+        zsynchronizowane, by uniknąć irytującego przesunięcia obu potoków.
+      </p>
+      <p>
+        Dla naszego przykładu, warstwa sesji utworzy teraz sesję z odbiorcą. Upewni się że jest dostępne z nim połaczenie, i będzie
+        pilnować przepływu danych z nim.
+      </p>
+    </div>
+  </section>
 </div>

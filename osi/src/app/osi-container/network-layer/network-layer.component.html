@@ -1,3 +1,23 @@
 <div class="network-layer__container">
+  <section *ngIf="isSender()" class="info">
+    <header class="dscr-header" data-toggle="collapse" data-target="#dscr-netw">
+      Czym jest Warstwa Sieciowa?
+      <i class="far fa-question-circle"></i>
+    </header>
+    <div class="layer-description collapse" id="dscr-netw">
+      <p>
+        Warstwa sieciowa dysponuje wiedzą dotyczącą fizycznej topologii sieci. Rozpoznaje, jakie drogi łączą poszczególne komputery
+        (trasowanie) i decyduje, ile informacji należy przesłać jednym z połączeń. W razie błędu pomija niepoprawne pakiety
+        danych, poniewż warstwa ta nie gwarantuje transmisji. Standardowa paczka danych czasami oznaczana jest jako NPDU
+        (ang. Network Protocol Data Unit). Jedyne jego zadanie, to zapewnienie sprawnej łączności między bardzo odległymi
+        punktami sieci.
+      </p>
+      <p>
+        Warstwa sieciowa podczas ruchu w dół umieszcza dane wewnątrz pakietów zrozumiałych dla warstw niższych (kapsułkowanie). Jednocześnie
+        warstwa sieci używa czterech procesów (adresowanie, enkapsulacja, routing, dekapsulacja). Protokoły warstwy sieci
+        to: (IPv4, IPv6, ICMP, NOVELL IPX, APPLE TALK, CLNS/DECN itd.).
+      </p>
+    </div>
+  </section>
   <div class="data-container">{{dat}}</div>
 </div>

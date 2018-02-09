@@ -1,28 +1,14 @@
-import {
-  Component,
-  OnInit,
-  OnDestroy,
-  Input
-} from '@angular/core';
-import { Subscription } from 'rxjs/Subscription';
-
+import { Component } from '@angular/core';
+import { BaseLayerComponent } from '../base-layer-component';
 import { OrchestratorService } from '../../orchestrator.service';
-import { LayerContent } from '../layer-content';
-import { TranslateService } from '../../translate.service';
-import {
-  LayerKind,
-  Direction,
-  LayerData,
-  LayerId,
-  DataBlock
-} from '../../domain/layers';
-import {
-  Config,
-  PhysicalBlock,
-  PhysicalLayer
-} from '../../domain/layers/physical';
-import { Format } from '../../domain/symbol';
+import { LayerKind, LayerData, DataBlock } from '../../domain/layers';
 import { Encoding, EncodingKind } from '../../domain/encoding';
+import { Format } from '../../domain/symbol';
+import {
+  PhysicalLayer,
+  PhysicalBlock,
+  Config
+} from '../../domain/layers/physical';
 
 export interface FormatOption {
   name: string;
@@ -34,14 +20,10 @@ export interface FormatOption {
   templateUrl: './physical-layer.component.html',
   styleUrls: ['./physical-layer.component.css']
 })
-export class PhysicalLayerComponent implements OnDestroy, LayerContent {
+export class PhysicalLayerComponent extends BaseLayerComponent {
   private readonly layerLogic = new PhysicalLayer();
   private readonly transferFormat = Format.Binary;
-  private clearStreamSubscription: Subscription;
-  private layerDataSubscription: Subscription;
-  private sourceLayerData: LayerData = { blocks: [] };
   private sourceDataBytes: number[][] = [];
-  private direction: Direction;
 
   readonly availableBlockSizes = [8, 16, 20, 32, 42, 64, 100];
   readonly availableFormats: FormatOption[] = [
@@ -56,36 +38,16 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
   displayFormat = this.availableFormats[3];
   displayBlocks: PhysicalBlock[][] = [];
 
-  constructor(private readonly orchestrator: OrchestratorService) {}
-
-  initialize(direction: Direction) {
-    this.direction = direction;
-
-    const observables = this.orchestrator.registerLayer(this.getLayerId());
-
-    this.clearStreamSubscription = observables.clearStream.subscribe(() => {
-      this.sourceLayerData = { blocks: [] };
-      this.sourceDataBytes = [];
-      this.displayBlocks = [];
-    });
-
-    this.layerDataSubscription = observables.layerData.subscribe(data => {
-      this.sourceLayerData = data;
-      this.processLayerData();
-    });
+  constructor(orchestrator: OrchestratorService) {
+    super(orchestrator);
   }
 
-  ngOnDestroy() {
-    this.clearStreamSubscription.unsubscribe();
-    this.layerDataSubscription.unsubscribe();
-  }
-
-  isSender(): boolean {
-    return this.direction === Direction.Sender;
+  getLayerKind(): LayerKind {
+    return LayerKind.Physical;
   }
 
   setDisplayBlocks() {
-    if (!this.hasData()) {
+    if (!this.hasSource()) {
       return;
     }
 
@@ -94,19 +56,48 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
   }
 
   processLayerData() {
-    if (!this.hasData()) {
+    if (!this.hasSource()) {
       return;
     }
 
-    this.extractBytesFromSource();
-    this.setDisplayBlocks();
-
-    const layerData = this.makeNextLayerData();
-    this.orchestrator.ready(this.getLayerId(), layerData);
+    this.processSourceLayerData();
+    this.pushNextLayerData();
   }
 
-  private hasData(): boolean {
-    return this.sourceLayerData.blocks.length > 0;
+  protected processSourceLayerData() {
+    if (this.isSender()) {
+      this.sourceDataBytes = this.sourceLayerData.blocks
+        .map(block => this.extractSenderMessage(block))
+        .map(msg => Encoding.getBytesAs(EncodingKind.ASCII, msg));
+    } else {
+      const cfg = this.getTransferConfig();
+      this.sourceDataBytes = this.sourceLayerData.blocks.map(packet => {
+        const physicalBlocks = packet.bytes as PhysicalBlock[];
+        return this.layerLogic.unprocess(cfg, physicalBlocks);
+      });
+    }
+  }
+
+  protected getNextLayerData(): LayerData {
+    if (this.isSender()) {
+      const cfg = this.getTransferConfig();
+      const transferBlocks = this.getPhysicalBlocks(cfg).map(
+        packet => ({ bytes: packet } as DataBlock)
+      );
+
+      return { blocks: transferBlocks };
+    } else {
+      const messageBlocks = this.sourceDataBytes
+        .map(packet => Encoding.fromBytesAs(EncodingKind.ASCII, packet))
+        .map(msg => ({ bytes: msg } as DataBlock));
+
+      return { blocks: messageBlocks };
+    }
+  }
+
+  protected clearRequested() {
+    this.sourceDataBytes = [];
+    this.displayBlocks = [];
   }
 
   private getDisplayConfig(): Config {
@@ -127,44 +118,6 @@ export class PhysicalLayerComponent implements OnDestroy, LayerContent {
     return this.sourceDataBytes.map(packet =>
       this.layerLogic.process(cfg, packet)
     );
-  }
-
-  private extractBytesFromSource() {
-    if (this.isSender()) {
-      this.sourceDataBytes = this.sourceLayerData.blocks
-        .map(block => this.extractSenderMessage(block))
-        .map(msg => Encoding.getBytesAs(EncodingKind.ASCII, msg));
-    } else {
-      const cfg = this.getTransferConfig();
-      this.sourceDataBytes = this.sourceLayerData.blocks.map(packet => {
-        const physicalBlocks = packet.bytes as PhysicalBlock[];
-        return this.layerLogic.unprocess(cfg, physicalBlocks);
-      });
-    }
-  }
-
-  private makeNextLayerData(): LayerData {
-    if (this.isSender()) {
-      const cfg = this.getTransferConfig();
-      const transferBlocks = this.getPhysicalBlocks(cfg).map(
-        packet => ({ bytes: packet } as DataBlock)
-      );
-
-      return { blocks: transferBlocks };
-    } else {
-      const messageBlocks = this.sourceDataBytes
-        .map(packet => Encoding.fromBytesAs(EncodingKind.ASCII, packet))
-        .map(msg => ({ bytes: msg } as DataBlock));
-
-      return { blocks: messageBlocks };
-    }
-  }
-
-  private getLayerId(): LayerId {
-    return {
-      kind: LayerKind.Physical,
-      direction: this.direction
-    };
   }
 
   private extractSenderMessage(dataBlocks: DataBlock): string {

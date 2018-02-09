@@ -1,3 +1,23 @@
 <div class="datalink-layer__container">
-  datalink-layer works in {{getModeName()}} Mode! {{data}}
+  <section *ngIf="isSender()" class="info">
+    <header class="dscr-header" data-toggle="collapse" data-target="#dscr-datl">
+      Czym jest Warstwa Łącza Danych?
+      <i class="far fa-question-circle"></i>
+    </header>
+    <div class="layer-description collapse" id="dscr-datl">
+      <p>
+        Protokół warstwy łącza danych definiuje format pakietów wymienianych między węzłami znajdującymi się na końcach łączy, a
+        także działania podejmowane przez te węzły w trakcie wysyłania i odbierania pakietów. Jednostki danych przesyłane
+        przez protokół warstwy łącza danych są nazywane ramkami, każda ramka zwykle kapsułkuje jeden datagram warstwy sieciowej.
+      </p>
+      <p>
+        Operacje wykonywane przez protokół warstwy łącza danych w chwili wysyłania i odbierania ramek uwzględniają detekcję błędów,
+        retransmisje, sterowanie przepływem i losowy dostęp.
+      </p>
+      <p>
+        Warstwa łącza danych ma możliwość zmiany parametrów pracy warstwy fizycznej, tak aby obniżyć liczbę pojawiających się podczas
+        przekazu błędów. Dzięki czemu nadzoruje jakość przekazywanych informacji.
+      </p>
+    </div>
+  </section>
 </div>

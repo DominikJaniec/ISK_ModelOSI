@@ -1,5 +1,4 @@
-@media (min-width: 1920px)
-{
+@media (min-width: 1920px) {
   .container {
     max-width: 1920px;
   }
@@ -20,8 +19,4 @@ footer {
   overflow: hidden;
   display: flex;
   justify-content: space-around;
-}
-
-.txt-icon {
-  font-family: 'Lucida Console', Monaco, monospace;
 }

@@ -1,4 +1,22 @@
 <div class="physical-layer__container">
+  <section *ngIf="isSender()" class="info">
+    <header class="dscr-header" data-toggle="collapse" data-target="#dscr-phy">
+      Czym jest Warstwa Fizyczna?
+      <i class="far fa-question-circle"></i>
+    </header>
+    <div class="layer-description collapse" id="dscr-phy">
+      <p>
+        Określa ona wszystkie składniki sieci niezbędne do obsługi elektrycznego, optycznego, radiowego wysyłania i odbierania sygnałów.
+        Opiera się ona o mechanizmy potrzebne do obsługi transmisji danych, takie jak techniki sygnalizacyjne, napięcie elektryczne
+        powodujące przepływ prądu elektrycznego przenoszącego sygnał, rodzaje nośników i odpowiadające im właściwości impedancji,
+        elektroniczne składniki kart sieciowych, a nawet fizyczny kształt złącza używanego do terminacji nośnika.</p>
+      <p>
+        Warstwa ta nie obejmuje żadnych sposobów weryfikowania integralności danych. Nie posiada ona bowiem mechanizmu służącego
+        rozpoznawaniu znaczenia wysyłanych, jak też otrzymywanych danych. Służy wyłącznie przesyłaniu strumienia logicznych
+        zer i jedynek.
+      </p>
+    </div>
+  </section>
   <section class="config">
     <label>
       Wyświetlaj dane:

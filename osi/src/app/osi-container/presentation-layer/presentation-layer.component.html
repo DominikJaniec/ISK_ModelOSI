@@ -1,13 +1,17 @@
 <div class="presentation-layer__container">
-  <header *ngIf="getModeName() != 'Odbiorca'" class="dscr-header" data-toggle="collapse" data-target="#dscr-app">
-    Czym jest Warstwa Prezentacji? <i class="far fa-question-circle"></i>
-  </header>
-  <div class="layer-description collapse" id="dscr-app" [class.show]="isExpanded">
-    <p>
-      Zapewnia tłumaczenie danych, definiowanie ich formatu oraz odpowiednią składnię. Umożliwia przekształcenie danych na postać standardową, niezależną od aplikacji. Rozwiązuje takie problemy jak niezgodność reprezentacji liczb, znaków końca wiersza, liter narodowych itp. Odpowiada także za kompresję i szyfrowanie. 
-    </p>
-  </div>
-  <!--*ngIf="dat"-->
+  <section *ngIf="getModeName() != 'Odbiorca'" class="info">
+    <header class="dscr-header" data-toggle="collapse" data-target="#dscr-pres">
+      Czym jest Warstwa Prezentacji?
+      <i class="far fa-question-circle"></i>
+    </header>
+    <div class="layer-description collapse" id="dscr-pres">
+      <p>
+        Zapewnia tłumaczenie danych, definiowanie ich formatu oraz odpowiednią składnię. Umożliwia przekształcenie danych na postać
+        standardową, niezależną od aplikacji. Rozwiązuje takie problemy jak niezgodność reprezentacji liczb, znaków końca
+        wiersza, liter narodowych itp. Odpowiada także za kompresję i szyfrowanie.
+      </p>
+    </div>
+  </section>
   <div *ngIf="dat">
     Dane zuploadowane przez Ciebie wyglądają na razie następująco:
     <div class="data-container" style="margin-bottom: 10px">{{dat}}</div>
@@ -18,7 +22,7 @@
       </option>
     </select>
     <div *ngIf="selectedCipher">
-      <div class="osi-input--wide" >
+      <div class="osi-input--wide">
         Podaj klucz szyfrowania:
         <input class="osi-input--wide" [(ngModel)]="cipherKey" />
       </div>
@@ -26,11 +30,10 @@
         <button class="osi-button" (click)="EncryptData()">Zaszyfruj wiadomość</button>
       </div>
     </div>
-    
+
     <div class="osi-input--wide" *ngIf="encryptedData">
-      Twoje dane są teraz zaszyfrowane, i wyglądają następująco: 
+      Twoje dane są teraz zaszyfrowane, i wyglądają następująco:
       <div class="data-container">{{encryptedData}}</div>
     </div>
   </div>
-
 </div>
