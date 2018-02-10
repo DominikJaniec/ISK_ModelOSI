@@ -20,6 +20,16 @@
       </p>
     </div>
   </section>
+  <section class="config">
+    <label>
+      Bloki o rozmiarze:
+      <select [(ngModel)]="transferBlockSize" (change)="pushNextLayerData()">
+        <option *ngFor="let size of availableBlockSizes" [ngValue]="size">
+          {{size}}
+        </option>
+      </select>
+    </label>
+  </section>
   <section *ngIf="isSender()">
     <div class="addr-mac">
       <header>Nadawca:</header>

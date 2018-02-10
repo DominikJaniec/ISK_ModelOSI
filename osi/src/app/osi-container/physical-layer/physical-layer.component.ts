@@ -7,7 +7,8 @@ import { Format } from '../../domain/symbol';
 import {
   PhysicalLayer,
   PhysicalBlock,
-  Config
+  Config,
+  SenderData
 } from '../../domain/layers/physical';
 
 export interface FormatOption {
@@ -25,7 +26,6 @@ export class PhysicalLayerComponent extends BaseLayerComponent {
   private readonly transferFormat = Format.Binary;
   private sourceDataBytes: number[][] = [];
 
-  readonly availableBlockSizes = [8, 16, 20, 32, 42, 64, 100];
   readonly availableFormats: FormatOption[] = [
     { name: 'Binarnie', format: Format.Binary },
     { name: 'Czwórkowo', format: Format.Quaternary },
@@ -34,9 +34,9 @@ export class PhysicalLayerComponent extends BaseLayerComponent {
     { name: 'Znaki ASCII', format: Format.ASCII }
   ];
 
-  transferBlockSize = this.availableBlockSizes[1];
   displayFormat = this.availableFormats[3];
   displayBlocks: PhysicalBlock[][] = [];
+  transferBlockSize = 0;
 
   constructor(orchestrator: OrchestratorService) {
     super(orchestrator);
@@ -68,7 +68,8 @@ export class PhysicalLayerComponent extends BaseLayerComponent {
     if (this.isSender()) {
       this.sourceDataBytes = this.sourceLayerData.blocks
         .map(block => this.extractSenderMessage(block))
-        .map(msg => Encoding.getBytesAs(EncodingKind.ASCII, msg));
+        .map(msg => msg.split('').map(c => (c === '0' ? 0 : 1)));
+      // .map(msg => Encoding.getBytesAs(EncodingKind.ASCII, msg));
     } else {
       const cfg = this.getTransferConfig();
       this.sourceDataBytes = this.sourceLayerData.blocks.map(packet => {
@@ -76,6 +77,8 @@ export class PhysicalLayerComponent extends BaseLayerComponent {
         return this.layerLogic.unprocess(cfg, physicalBlocks);
       });
     }
+
+    this.setDisplayBlocks();
   }
 
   protected getNextLayerData(): LayerData {
@@ -121,8 +124,11 @@ export class PhysicalLayerComponent extends BaseLayerComponent {
   }
 
   private extractSenderMessage(dataBlocks: DataBlock): string {
-    if (dataBlocks.bytes instanceof Array) {
-      const data = dataBlocks.bytes as any[];
+    const senderData = dataBlocks.bytes as SenderData;
+    this.transferBlockSize = senderData.blockSize;
+
+    if (senderData.dataBytes instanceof Array) {
+      const data = senderData.dataBytes as any[];
       if (data.length === 1) {
         const content = data[0];
         if (typeof content === 'string') {

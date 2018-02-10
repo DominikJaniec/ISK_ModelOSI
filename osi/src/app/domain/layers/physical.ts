@@ -11,6 +11,11 @@ export interface PhysicalBlock {
   readonly symbols: string;
 }
 
+export interface SenderData {
+  readonly blockSize: number;
+  readonly dataBytes: number[];
+}
+
 export class PhysicalLayer {
   process(cfg: Config, bytes: number[]): PhysicalBlock[] {
     const blocks: PhysicalBlock[] = [];

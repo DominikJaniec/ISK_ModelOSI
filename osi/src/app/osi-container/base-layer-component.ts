@@ -46,17 +46,19 @@ export abstract class BaseLayerComponent implements OnDestroy, LayerContent {
     return this.sourceLayerData.blocks.length > 0;
   }
 
+  pushNextLayerData() {
+    if (this.hasSource()) {
+      const nextLayerData = this.getNextLayerData();
+      this.orchestrator.ready(this.getLayerId(), nextLayerData);
+    }
+  }
+
   protected clearRequested(): void {}
 
   protected processSourceLayerData(): void {}
 
   protected getNextLayerData(): LayerData {
     return this.sourceLayerData;
-  }
-
-  protected pushNextLayerData() {
-    const nextLayerData = this.getNextLayerData();
-    this.orchestrator.ready(this.getLayerId(), nextLayerData);
   }
 
   protected onDestroy(): void {}

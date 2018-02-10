@@ -26,14 +26,6 @@
         </option>
       </select>
     </label>
-    <label>
-      Bloki o rozmiarze:
-      <select [(ngModel)]="transferBlockSize" (change)="processLayerData()">
-        <option *ngFor="let size of availableBlockSizes" [ngValue]="size">
-          {{size}}
-        </option>
-      </select>
-    </label>
   </section>
   <section class="blocks">
     <header>
