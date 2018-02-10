@@ -21,6 +21,7 @@ export class DatalinkLayerComponent extends BaseLayerComponent {
     super(orchestrator);
     this.senderEndpoint = new Endpoint();
     this.receiverEndpoint = new Endpoint();
+    this.regenerate();
   }
 
   getLayerKind(): LayerKind {

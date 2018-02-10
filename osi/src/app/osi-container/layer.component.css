@@ -22,7 +22,7 @@ header.layer .indicator {
 }
 
 .layer-content section {
-  min-height: 150px;
+  /* min-height: 150px; */
   font-size: 14px;
   padding: 15px;
   padding-bottom: 25px;

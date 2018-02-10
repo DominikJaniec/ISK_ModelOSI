@@ -18,6 +18,7 @@ export class NetworkLayerComponent extends BaseLayerComponent {
     super(orchestrator);
     this.senderEndpoint = new Endpoint();
     this.receiverEndpoint = new Endpoint();
+    this.regenerate();
   }
 
   getLayerKind(): LayerKind {
