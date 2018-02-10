@@ -6,7 +6,6 @@ import { OrchestratorService } from './orchestrator.service';
 import { TranslateService } from './translate.service';
 
 import { AppComponent } from './app.component';
-import { EndpointComponent } from './endpoint/endpoint.component';
 import { FileLoaderComponent } from './file-loader/file-loader.component';
 import { OsiContainerComponent } from './osi-container/osi-container.component';
 import { OsiStackComponent } from './osi-container/osi-stack.component';
@@ -25,7 +24,6 @@ import { LoggerComponent } from './logger/logger.component';
 @NgModule({
   declarations: [
     AppComponent,
-    EndpointComponent,
     FileLoaderComponent,
     OsiContainerComponent,
     OsiStackComponent,

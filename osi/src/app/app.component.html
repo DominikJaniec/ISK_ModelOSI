@@ -1,15 +1,9 @@
 <section class="app">
   <div class="container">
     <div class="row">
-      <div class="col-md-2">
-        <app-endpoint [endpoint]="sender" [displayName]="'Nadawca'"></app-endpoint>
-      </div>
-      <div class="col-md-8">
+      <div class="col-md-12">
         <h1>Wizualizacja Modelu OSI/ISO</h1>
         <app-osi-container></app-osi-container>
-      </div>
-      <div class="col-md-2">
-        <app-endpoint [endpoint]="receiver" [displayName]="'Odbiorca'"></app-endpoint>
       </div>
     </div>
     <app-logger class="row" [enabled]="true" [onlyConsole]="true"></app-logger>

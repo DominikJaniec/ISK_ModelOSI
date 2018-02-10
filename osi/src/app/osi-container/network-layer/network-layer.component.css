@@ -1,2 +1,6 @@
 .network-layer__container {
 }
+
+.addr-ip-port .port {
+  width: 50px;
+}

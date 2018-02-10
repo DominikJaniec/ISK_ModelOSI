@@ -20,4 +20,15 @@
       </p>
     </div>
   </section>
+  <section *ngIf="isSender()">
+    <div class="addr-mac">
+      <header>Nadawca:</header>
+      <input class="mac" placeholder="Adres MAC" [(ngModel)]="senderEndpoint.mac">
+    </div>
+    <div class="addr-ip-port">
+      <header>Odbiorca:</header>
+      <input class="mac" placeholder="Adres MAC" [(ngModel)]="receiverEndpoint.mac">
+    </div>
+    <button (click)="regenerate()">Losuj</button>
+  </section>
 </div>

@@ -20,4 +20,17 @@
     </div>
   </section>
   <div class="data-container">{{dat}}</div>
+  <section *ngIf="isSender()">
+    <div class="addr-ip-port">
+      <header>Nadawca:</header>
+      <input class="ip" placeholder="Adres IP" [(ngModel)]="senderEndpoint.ip">
+      <input class="port" placeholder="Port" [(ngModel)]="senderEndpoint.port">
+    </div>
+    <div class="addr-ip-port">
+      <header>Odbiorca:</header>
+      <input class="ip" placeholder="Adres IP" [(ngModel)]="receiverEndpoint.ip">
+      <input class="port" placeholder="Port" [(ngModel)]="receiverEndpoint.port">
+    </div>
+    <button (click)="regenerate()">Losuj</button>
+  </section>
 </div>
